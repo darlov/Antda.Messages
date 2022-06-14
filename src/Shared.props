@@ -8,7 +8,6 @@
     <Company>Denis Arlovski</Company>
     
     <PackageId>$(AssemblyName)</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/darlov/Antda</RepositoryUrl>
