@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Description>The extension for Antda.Messages to provide Microsoft DI as service resolver.</Description>
   </PropertyGroup>
 
   <ItemGroup>
