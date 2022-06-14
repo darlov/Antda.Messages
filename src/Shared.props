@@ -1,0 +1,32 @@
+﻿<Project>
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    
+    <Authors>Denis Arlovski</Authors>
+    <Company>Denis Arlovski</Company>
+    
+    <PackageId>$(AssemblyName)</PackageId>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/darlov/Antda</RepositoryUrl>
+    <PackageTags>Antda</PackageTags>
+    <IsPackable>true</IsPackable>
+    
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
+<ItemGroup>
+  <Content Include="..\..\LICENSE" Pack="true" PackagePath="">
+    <Link>LICENSE</Link>
+  </Content>
+</ItemGroup>
+</Project>
