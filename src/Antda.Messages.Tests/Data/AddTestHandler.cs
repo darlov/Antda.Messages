@@ -1,10 +1,9 @@
-﻿namespace Antda.Messages.Tests.Data
+﻿namespace Antda.Messages.Tests.Data;
+
+public class AddTestHandler : MessageHandler<AddTestMessage, string>
 {
-  public class AddTestHandler: MessageHandler<AddTestMessage, string>
+  public override Task<string> HandleAsync(AddTestMessage message, CancellationToken cancellationToken)
   {
-    public override Task<string> HandleAsync(AddTestMessage message, CancellationToken cancellationToken)
-    {
-      return Task.FromResult(message.Payload);
-    }
+    return Task.FromResult(message.Payload);
   }
 }

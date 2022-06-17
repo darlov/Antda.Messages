@@ -1,12 +1,11 @@
-﻿namespace Antda.Messages.Tests.Data
-{
-  public class AddTestMessage : PipeMessage<string>
-  {
-    public AddTestMessage(string payload)
-    {
-      Payload = payload;
-    }
+﻿namespace Antda.Messages.Tests.Data;
 
-    public string Payload { get; }
+public class AddTestMessage : IMessage<string>
+{
+  public AddTestMessage(string payload)
+  {
+    Payload = payload;
   }
+
+  public string Payload { get; }
 }

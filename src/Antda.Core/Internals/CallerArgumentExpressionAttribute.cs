@@ -1,4 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
+
 namespace System.Runtime.CompilerServices;
 
 /// <summary>
@@ -11,7 +12,10 @@ internal sealed class CallerArgumentExpressionAttribute : Attribute
   /// Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" /> class.
   /// </summary>
   /// <param name="parameterName">The name of the targeted parameter.</param>
-  public CallerArgumentExpressionAttribute(string parameterName) => ParameterName = parameterName;
+  public CallerArgumentExpressionAttribute(string parameterName)
+  {
+    ParameterName = parameterName;
+  }
 
   /// <summary>
   /// Gets the target parameter name of the <c>CallerArgumentExpression</c>.
