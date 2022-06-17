@@ -2,5 +2,5 @@
 
 public interface IServiceResolver
 {
-    object GetRequiredService(Type serviceType);
+  object? GetService(Type serviceType);
 }

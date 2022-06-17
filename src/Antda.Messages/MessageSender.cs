@@ -1,24 +1,22 @@
 ﻿using Antda.Core.Exceptions;
-using Antda.Messages.Wrappers;
+using Antda.Messages.Internal;
 
 namespace Antda.Messages;
 
 public class MessageSender : IMessageSender
 {
-    private readonly IHandlerWrapperFactory _handlerWrapperFactory;
+  private readonly IMessageProcessorFactory _messageProcessorFactory;
 
-    public MessageSender(IHandlerWrapperFactory handlerWrapperFactory)
-    {
-        _handlerWrapperFactory = handlerWrapperFactory;
-    }
+  public MessageSender(IMessageProcessorFactory messageProcessorFactory)
+  {
+    _messageProcessorFactory = messageProcessorFactory;
+  }
 
-    public async Task<TResult> SendAsync<TResult>(PipeMessage<TResult> message, CancellationToken cancellationToken = default)
-    {
-        Throw.If.ArgumentNull(message);
+  public async Task<TResult?> SendAsync<TResult>(IMessage<TResult> message, CancellationToken cancellationToken = default)
+  {
+    Throw.If.ArgumentNull(message);
 
-        var handlerWrapper = _handlerWrapperFactory.Create<PipeMessage<TResult>, TResult>(message);
-
-        var result = await handlerWrapper.HandleAsync(message, cancellationToken);
-        return result;
-    }
+    var messageProcessor = _messageProcessorFactory.Create<IMessage<TResult>, TResult>(message);
+    return await messageProcessor.ProcessAsync(message, cancellationToken);
+  }
 }

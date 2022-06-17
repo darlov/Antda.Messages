@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
-using Antda.Core.Extensions;
-using Antda.Messages.Wrappers;
+using Antda.Core.Helpers;
+using Antda.Messages.Internal;
+using Antda.Messages.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -8,44 +9,40 @@ namespace Antda.Messages.Extensions.Microsoft.DependencyInjection;
 
 public static class MessagesServiceCollectionExtensions
 {
-    public static IServiceCollection AddAntdaMessages(this IServiceCollection services,  IEnumerable<Assembly> assembliesToScan)
+  public static IMiddlewareBuilder AddAntdaMessages(this IServiceCollection services, params Assembly[] assembliesToScan)
+  {
+    return services.AddAntdaMessages((IEnumerable<Assembly>)assembliesToScan);
+  }
+
+  public static IMiddlewareBuilder AddAntdaMessagesCore(this IServiceCollection services)
+  {
+    services.TryAddTransient<IMessageSender, MessageSender>();
+    services.TryAddTransient<IServiceResolver, MicrosoftServiceResolver>();
+    services.TryAddTransient<IMessageProcessorFactory, MessageProcessorFactory>();
+    services.TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>));
+
+    var middlewareBuilder = new MiddlewareBuilder();
+    services.AddSingleton<IMiddlewareProvider>(middlewareBuilder);
+    services.AddSingleton<IMiddlewareBuilder>(middlewareBuilder);
+
+    services.TryAddTransient(typeof(HandleMessageMiddleware<,>));
+    middlewareBuilder.UseMiddleware(typeof(HandleMessageMiddleware<,>));
+
+    return middlewareBuilder;
+  }
+
+  public static IMiddlewareBuilder AddAntdaMessages(this IServiceCollection services, IEnumerable<Assembly> assembliesToScan)
+  {
+    var builder =  services.AddAntdaMessagesCore();
+    
+    foreach (var typeInfo in TypeHelper.FindAllowedTypes(assembliesToScan))
     {
-        services.TryAddTransient<IMessageSender, MessageSender>();
-        services.TryAddTransient<IServiceResolver, MicrosoftServiceResolver>();
-        services.TryAddTransient<IHandlerWrapperFactory, HandlerWrapperFactory>();
-        services.TryAddTransient(typeof(MessageHandlerWrapper<,>));
-
-        foreach (var typeInfo in assembliesToScan.SelectMany(s => s.DefinedTypes).Where(t => !t.IsOpenGeneric()))
-        {
-            foreach (var interfaceType in FindConcreteInterfaces(typeInfo, typeof(IMessageHandler<,>)))
-            {
-                services.AddTransient(interfaceType, typeInfo);
-            }
-        }
-
-        return services;
+      foreach (var interfaceType in TypeHelper.FindGenericInterfaces(typeInfo, typeof(IMessageHandler<,>)))
+      {
+        services.AddTransient(interfaceType, typeInfo);
+      }
     }
 
-    private static IEnumerable<Type> FindConcreteInterfaces(Type? type, Type interfaceToFind)
-    {
-        if (type == null)
-        {
-            yield break;
-        }
-
-        if (type.IsAbstract || type.IsInterface || type == typeof(object))
-        {
-            yield break;
-        }
-
-        foreach (var interfaceType in type.GetInterfaces().Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == interfaceToFind))
-        {
-            yield return interfaceType;
-        }
-
-        foreach (var interfaceType in FindConcreteInterfaces(type.BaseType, interfaceToFind))
-        {
-            yield return interfaceType;
-        }
-    }
+    return builder;
+  }
 }

@@ -1,10 +1,9 @@
-﻿namespace Antda.Messages
+﻿namespace Antda.Messages;
+
+public record Unit
 {
-  public record Unit
-  {
-    // ReSharper disable once InconsistentNaming
-    private static readonly Unit _value = new();
-    
-    public static ref readonly Unit Value => ref _value;
-  }
+  // ReSharper disable once InconsistentNaming
+  private static readonly Unit _value = new();
+
+  public static ref readonly Unit Value => ref _value;
 }
