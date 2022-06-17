@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Antda.Messages.Extensions.Microsoft.DependencyInjection\Antda.Messages.Extensions.Microsoft.DependencyInjection.csproj"/>
+    <ProjectReference Include="..\..\Antda.Messages\Antda.Messages.csproj"/>
+  </ItemGroup>
+
+</Project>

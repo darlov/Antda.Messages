@@ -1,30 +1,27 @@
-﻿using Antda.Messages.Tests.Data;
-using Antda.Messages.Wrappers;
+﻿using Antda.Messages.Internal;
+using Antda.Messages.Middleware;
+using Antda.Messages.Tests.Data;
 using Moq;
 
-namespace Antda.Messages.Tests
+namespace Antda.Messages.Tests;
+
+public class HandlerWrapperFactoryTests
 {
-  public class HandlerWrapperFactoryTests
+  [Fact]
+  public async Task Create_WithValidMessage_ShouldBeCreated()
   {
-    [Fact]
-    public async Task Create_WithValidMessage_ShouldBeCreated()
-    {
-      const string MessagePayload = "Test Message";
-      
-      var serviceProviderMock = new Mock<IServiceResolver>();
+    var serviceProviderMock = new Mock<IServiceResolver>();
+    var middlewareProviderMock = new Mock<IMiddlewareProvider>();
 
-      serviceProviderMock.Setup(m => m.GetRequiredService(typeof(MessageHandlerWrapper<AddTestMessage, string>)))
-        .Returns(new MessageHandlerWrapper<AddTestMessage, string>(new AddTestHandler()));
+    var expectedMessageProcessor = new MessageProcessor<AddTestMessage, string>(serviceProviderMock.Object, middlewareProviderMock.Object);
 
-      var factory = new HandlerWrapperFactory(serviceProviderMock.Object);
+    serviceProviderMock.Setup(m => m.GetService(typeof(IMessageProcessor<AddTestMessage, string>)))
+      .Returns(expectedMessageProcessor);
 
-      var message = (PipeMessage<string>)new AddTestMessage(MessagePayload);
-      
-      var handler = factory.Create<PipeMessage<string>, string>(message);
-
-      var result = await handler.HandleAsync(message, CancellationToken.None);
-      
-      Assert.Equal(MessagePayload, result);
-    }
+    var factory = new MessageProcessorFactory(serviceProviderMock.Object);
+    var message = new AddTestMessage("Bla-bla");
+    var messageProcessor = factory.Create<IMessage<string>, string>(message);
+    
+    Assert.Equal(expectedMessageProcessor, messageProcessor);
   }
 }
