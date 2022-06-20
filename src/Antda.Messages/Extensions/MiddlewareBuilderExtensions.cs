@@ -7,10 +7,11 @@ namespace Antda.Messages.Extensions;
 public static class MiddlewareBuilderExtensions
 {
   public static IMiddlewareBuilder Use<TMessage>(this IMiddlewareBuilder builder, Func<MessageDelegate, MessageDelegate> next)
-    where TMessage : IMessage
-  {
-    return builder.Use(typeof(TMessage), next);
-  }
+    where TMessage : IMessage 
+    => builder.Use(typeof(TMessage), next);
+
+  public static IMiddlewareBuilder UseHandleMessages(this IMiddlewareBuilder builder) 
+    => builder.UseMiddleware(typeof(HandleMessageMiddleware<,>));
 
   public static IMiddlewareBuilder UseMiddleware<TMiddleware>(this IMiddlewareBuilder builder)
     where TMiddleware : IMessageMiddleware

@@ -26,7 +26,6 @@ public static class MessagesServiceCollectionExtensions
     services.AddSingleton<IMiddlewareBuilder>(middlewareBuilder);
 
     services.TryAddTransient(typeof(HandleMessageMiddleware<,>));
-    middlewareBuilder.UseMiddleware(typeof(HandleMessageMiddleware<,>));
 
     return middlewareBuilder;
   }
