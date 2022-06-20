@@ -1,4 +1,5 @@
 ﻿using Antda.Messages.Benchmarks.Handlers;
+using Antda.Messages.Extensions;
 using Antda.Messages.Extensions.Microsoft.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,8 @@ public class MessageSenderBenchmark
   public MessageSenderBenchmark()
   {
     var serviceCollection = new ServiceCollection();
-    serviceCollection.AddAntdaMessages(typeof(BaseMessageHandler).Assembly);
+    serviceCollection.AddAntdaMessages(typeof(BaseMessageHandler).Assembly)
+      .UseHandleMessages();
     _serviceProvider = serviceCollection.BuildServiceProvider();
     _messageSender = _serviceProvider.GetRequiredService<IMessageSender>();
     _message = new BaseMessage();

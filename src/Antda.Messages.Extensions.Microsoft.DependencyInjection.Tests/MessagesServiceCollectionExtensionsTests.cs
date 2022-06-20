@@ -12,7 +12,9 @@ public class MessagesServiceCollectionExtensionsTests
   {
     var services = new ServiceCollection();
 
-    services.AddAntdaMessages(GetType().Assembly);
+    services.AddAntdaMessages(GetType().Assembly)
+      .UseHandleMessages();
+    
     var provider = services.BuildServiceProvider();
 
     var sender = provider.GetRequiredService<IMessageSender>();
@@ -33,6 +35,7 @@ public class MessagesServiceCollectionExtensionsTests
     services.AddTransient(_ => new ModifyResultMiddleware(additionalText));
 
     services.AddAntdaMessages(GetType().Assembly)
+      .UseHandleMessages()
       .UseMiddleware<ModifyResultMiddleware>();
     
     var provider = services.BuildServiceProvider();
@@ -50,7 +53,8 @@ public class MessagesServiceCollectionExtensionsTests
   {
     var services = new ServiceCollection();
 
-    services.AddAntdaMessagesCore();
+    services.AddAntdaMessagesCore()
+      .UseHandleMessages();
 
     services.AddTransient<IMessageHandler<DefaultMessage, string>, DefaultHandler>();
     services.AddTransient<IMessageHandler<NoResultMessage, Unit>, NoResultHandler>();
