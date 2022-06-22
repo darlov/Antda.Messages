@@ -1,6 +1,6 @@
 ﻿namespace Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests.Messages;
 
-public class DefaultMessage : IMessage<string>
+public class DefaultMessage : IMessage<string>, ICustomInterface
 {
   public DefaultMessage(string payload)
   {
@@ -8,4 +8,6 @@ public class DefaultMessage : IMessage<string>
   }
 
   public string Payload { get; }
+  
+  public string? CustomProp { get; set; }
 }

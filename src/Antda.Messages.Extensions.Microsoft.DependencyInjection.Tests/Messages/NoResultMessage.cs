@@ -3,3 +3,8 @@
 public class NoResultMessage : IMessage
 {
 }
+
+public class NoResultWithCustomMessage : NoResultMessage, ICustomInterface
+{
+  public string? CustomProp { get; set; }
+}

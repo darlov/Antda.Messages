@@ -10,7 +10,7 @@ public class HandleMessageMiddleware<TMessage, TResult> : MessageMiddleware<TMes
     _messageHandler = messageHandler;
   }
 
-  public override async Task InvokeAsync(MessageContext<TMessage, TResult> context, MessageDelegate next, CancellationToken cancellationToken)
+  public override async Task InvokeAsync(IMessageContext<TMessage, TResult> context, MessageDelegate next, CancellationToken cancellationToken)
   {
     var result = await _messageHandler.HandleAsync(context.Message, cancellationToken);
     context.Result = result;

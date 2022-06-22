@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Antda.Core.Extensions;
 using Antda.Core.Helpers;
 using Antda.Messages.Middleware;
 
@@ -7,7 +8,6 @@ namespace Antda.Messages.Extensions;
 public static class MiddlewareBuilderExtensions
 {
   public static IMiddlewareBuilder Use<TMessage>(this IMiddlewareBuilder builder, Func<MessageDelegate, MessageDelegate> next)
-    where TMessage : IMessage 
     => builder.Use(typeof(TMessage), next);
 
   public static IMiddlewareBuilder UseHandleMessages(this IMiddlewareBuilder builder) 
@@ -21,14 +21,16 @@ public static class MiddlewareBuilderExtensions
 
   public static IMiddlewareBuilder UseMiddleware(this IMiddlewareBuilder builder, Type middlewareType)
   {
-    var middlewareInterface = TypeHelper.FindGenericInterfaces(middlewareType, typeof(IMessageMiddleware<,>)).FirstOrDefault();
+    var middlewareInterface = TypeHelper.FindTypes(middlewareType, typeof(IMessageMiddleware<,>)).FirstOrDefault()
+                              ?? TypeHelper.FindTypes(middlewareType, typeof(IMessageMiddleware<>)).FirstOrDefault();
 
     if (middlewareInterface == null)
     {
       throw new InvalidExpressionException($"The middleware {middlewareType} is not implemented IMessageMiddleware interface");
     }
 
-    if (middlewareType.IsGenericType)
+
+    if (middlewareType.IsOpenGeneric())
     {
       builder.AddGenericMiddleware(middlewareType);
     }
