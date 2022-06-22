@@ -1,8 +1,9 @@
 ﻿namespace Antda.Messages.Middleware;
 
-public abstract class MessageContext
+
+public class MessageContext : IMessageContext
 {
-  public MessageContext(IServiceResolver serviceResolver, CancellationToken cancellationToken)
+  protected MessageContext(IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {
     ServiceResolver = serviceResolver;
     CancellationToken = cancellationToken;
@@ -13,16 +14,25 @@ public abstract class MessageContext
   public CancellationToken CancellationToken { get; }
 }
 
-public class MessageContext<TMessage, TResult> : MessageContext
-  where TMessage : IMessage<TResult>
+
+public class MessageContext<TMessage>  : MessageContext, IMessageContext<TMessage>
 {
-  public MessageContext(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
+  protected MessageContext(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken) 
     : base(serviceResolver, cancellationToken)
   {
     Message = message;
   }
-
+ 
   public TMessage Message { get; }
+}
+
+public class MessageContext<TMessage, TResult> : MessageContext<TMessage>, IMessageContext<TMessage, TResult>
+  where TMessage : IMessage<TResult>
+{
+  public MessageContext(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
+    : base(message, serviceResolver, cancellationToken)
+  {
+  }
 
   public TResult? Result { get; set; }
 }

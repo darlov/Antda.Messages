@@ -2,5 +2,5 @@
 
 public interface IMiddlewareBuilder
 {
-  IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> next);
+  IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> factory);
 }

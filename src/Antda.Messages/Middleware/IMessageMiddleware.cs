@@ -2,11 +2,16 @@
 
 public interface IMessageMiddleware
 {
-  Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken);
+  Task InvokeAsync(IMessageContext context, MessageDelegate next, CancellationToken cancellationToken);
 }
 
-public interface IMessageMiddleware<TMessage, TResult> : IMessageMiddleware
+public interface IMessageMiddleware<in TMessage> : IMessageMiddleware
+{
+  Task InvokeAsync(IMessageContext<TMessage> context, MessageDelegate next, CancellationToken cancellationToken);
+}
+
+public interface IMessageMiddleware<in TMessage, TResult> : IMessageMiddleware
   where TMessage : IMessage<TResult>
 {
-  Task InvokeAsync(MessageContext<TMessage, TResult> context, MessageDelegate next, CancellationToken cancellationToken);
+  Task InvokeAsync(IMessageContext<TMessage, TResult> context, MessageDelegate next, CancellationToken cancellationToken);
 }

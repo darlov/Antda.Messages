@@ -1,32 +1,14 @@
-﻿namespace Antda.Messages.Middleware;
+﻿using Antda.Core.Helpers;
+
+namespace Antda.Messages.Middleware;
 
 public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 {
-  private readonly IList<Func<MessageDelegate, MessageDelegate>> _commonMiddlewares = new List<Func<MessageDelegate, MessageDelegate>>();
-  private readonly IDictionary<Type, IList<Func<MessageDelegate, MessageDelegate>>> _messageMiddlewares = new Dictionary<Type, IList<Func<MessageDelegate, MessageDelegate>>>();
+  private readonly IList<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> _middlewares = new List<(Type Type, Func<MessageDelegate, MessageDelegate> Delegate)>();
 
-  public IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> next)
+  public IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> factory)
   {
-    if (messageType == typeof(IMessage<>))
-    {
-      _commonMiddlewares.Add(next);
-
-      foreach (var middlewares in _messageMiddlewares.Values)
-      {
-        middlewares.Add(next);
-      }
-    }
-    else
-    {
-      if (!_messageMiddlewares.TryGetValue(messageType, out var middlewares))
-      {
-        middlewares = new List<Func<MessageDelegate, MessageDelegate>>(_commonMiddlewares);
-        _messageMiddlewares[messageType] = middlewares;
-      }
-
-      middlewares.Add(next);
-    }
-
+    _middlewares.Add((messageType, factory));
     return this;
   }
 
@@ -34,10 +16,7 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
   {
     MessageDelegate invokeDelegate = _ => Task.CompletedTask;
 
-    if (!_messageMiddlewares.TryGetValue(messageType, out var middlewares))
-    {
-      middlewares = _commonMiddlewares;
-    }
+    var middlewares = GetMiddlewares(messageType);
 
     foreach (var middleware in middlewares.Reverse())
     {
@@ -45,5 +24,16 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
     }
 
     return invokeDelegate;
+  }
+
+  private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)
+  {
+    foreach (var (type, middleware) in _middlewares)
+    {
+      if (TypeHelper.FindTypes(messageType, type).Any())
+      {
+        yield return middleware;
+      }
+    }
   }
 }

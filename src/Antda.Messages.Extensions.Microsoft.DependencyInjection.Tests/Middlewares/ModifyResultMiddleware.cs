@@ -12,7 +12,7 @@ public class ModifyResultMiddleware : MessageMiddleware<DefaultMessage, string>
     _additionalText = additionalText;
   }
   
-  public override Task InvokeAsync(MessageContext<DefaultMessage, string> context, MessageDelegate next, CancellationToken cancellationToken)
+  public override Task InvokeAsync(IMessageContext<DefaultMessage, string> context, MessageDelegate next, CancellationToken cancellationToken)
   {
     context.Result += _additionalText;
 

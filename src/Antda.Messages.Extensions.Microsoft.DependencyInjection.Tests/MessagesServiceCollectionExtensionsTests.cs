@@ -14,8 +14,8 @@ public class MessagesServiceCollectionExtensionsTests
 
     services.AddAntdaMessages(GetType().Assembly)
       .UseHandleMessages();
-    
-    var provider = services.BuildServiceProvider();
+
+    await using var provider = services.BuildServiceProvider();
 
     var sender = provider.GetRequiredService<IMessageSender>();
 
@@ -37,8 +37,8 @@ public class MessagesServiceCollectionExtensionsTests
     services.AddAntdaMessages(GetType().Assembly)
       .UseHandleMessages()
       .UseMiddleware<ModifyResultMiddleware>();
-    
-    var provider = services.BuildServiceProvider();
+
+    await using var provider = services.BuildServiceProvider();
     
     var sender = provider.GetRequiredService<IMessageSender>();
 
@@ -58,8 +58,8 @@ public class MessagesServiceCollectionExtensionsTests
 
     services.AddTransient<IMessageHandler<DefaultMessage, string>, DefaultHandler>();
     services.AddTransient<IMessageHandler<NoResultMessage, Unit>, NoResultHandler>();
-    
-    var provider = services.BuildServiceProvider();
+
+    await using var provider = services.BuildServiceProvider();
 
     var sender = provider.GetRequiredService<IMessageSender>();
 
@@ -67,6 +67,39 @@ public class MessagesServiceCollectionExtensionsTests
     var defaultResult = await sender.SendAsync(defaultMessage);
 
     Assert.Equal("Test", defaultResult);
+    
+    var noResultMessage = new NoResultMessage();
+    await sender.SendAsync(noResultMessage);
+  }
+  
+  [Fact]
+  public async Task AddAntdaMessages_WitCustomMiddleware_ShouldResolve()
+  {
+    const string customPropText = "Custom text";
+    
+    var services = new ServiceCollection();
+
+    services.AddTransient(_ => new CustomTypeMiddleware(customPropText));
+    services.AddTransient<IMessageHandler<DefaultMessage, string>, DefaultHandler>();
+    services.AddTransient<IMessageHandler<NoResultMessage, Unit>, NoResultHandler>();
+      
+    services.AddAntdaMessagesCore()
+      .UseMiddleware<CustomTypeMiddleware>()
+      .UseHandleMessages();
+
+    await using var provider = services.BuildServiceProvider();
+
+    var sender = provider.GetRequiredService<IMessageSender>();
+
+    var defaultMessage = new DefaultMessage("Test");
+    var _ = await sender.SendAsync(defaultMessage);
+
+    Assert.Equal(customPropText, defaultMessage.CustomProp);
+    
+    var noResultWithCustomMessage = new NoResultWithCustomMessage();
+    await sender.SendAsync(noResultWithCustomMessage);
+    
+    Assert.Equal(customPropText, noResultWithCustomMessage.CustomProp);
     
     var noResultMessage = new NoResultMessage();
     await sender.SendAsync(noResultMessage);
