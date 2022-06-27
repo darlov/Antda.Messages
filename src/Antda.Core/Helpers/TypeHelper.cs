@@ -15,29 +15,6 @@ public static class TypeHelper
     return assembly.DefinedTypes.Where(t => !t.IsOpenGeneric());
   }
 
-  public static IEnumerable<Type> FindGenericInterfaces(Type? typeToScan, Type acceptableInterface)
-  {
-    if (typeToScan == null)
-    {
-      yield break;
-    }
-
-    if (typeToScan.IsAbstract || typeToScan.IsInterface || typeToScan == typeof(object))
-    {
-      yield break;
-    }
-
-    foreach (var interfaceType in typeToScan.GetInterfaces().Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == acceptableInterface))
-    {
-      yield return interfaceType;
-    }
-
-    foreach (var interfaceType in FindGenericInterfaces(typeToScan.BaseType, acceptableInterface))
-    {
-      yield return interfaceType;
-    }
-  }
-
   public static IEnumerable<Type> FindTypes(Type? typeToScan, Type acceptableType) 
     => FindTypesInternal(typeToScan, acceptableType).Distinct();
 

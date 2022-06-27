@@ -23,12 +23,17 @@ public static class MessagesServiceCollectionExtensions
 
     var middlewareBuilder = new MiddlewareBuilder();
     services.AddSingleton<IMiddlewareProvider>(middlewareBuilder);
-    services.AddSingleton<IMiddlewareBuilder>(middlewareBuilder);
 
     services.TryAddTransient(typeof(HandleMessageMiddleware<,>));
 
     return middlewareBuilder;
   }
+  
+  public static IServiceCollection AddMessageHandler<T>(this IServiceCollection services) 
+    => services.AddMessageHandler(typeof(T));
+
+  public static IServiceCollection AddMessageHandler(this IServiceCollection services, Type handlerType)
+    => services.AddMessageHandlerInternal(handlerType, false);
 
   public static IMiddlewareBuilder AddAntdaMessages(this IServiceCollection services, IEnumerable<Assembly> assembliesToScan)
   {
@@ -36,12 +41,30 @@ public static class MessagesServiceCollectionExtensions
     
     foreach (var typeInfo in TypeHelper.FindAllowedTypes(assembliesToScan))
     {
-      foreach (var interfaceType in TypeHelper.FindGenericInterfaces(typeInfo, typeof(IMessageHandler<,>)))
-      {
-        services.AddTransient(interfaceType, typeInfo);
-      }
+      services.AddMessageHandlerInternal(typeInfo, true);
     }
 
     return builder;
+  }
+  
+  private static IServiceCollection AddMessageHandlerInternal(this IServiceCollection services, Type handlerType, bool skipNotSupported)
+  {
+    var types = TypeHelper.FindTypes(handlerType, typeof(IMessageHandler<,>)).ToList();
+    if (!types.Any())
+    {
+      if (skipNotSupported)
+      {
+        return services;
+      }
+      
+      throw new NotSupportedException("Message handler should implemented IMessageHandler interface.");
+    }
+    
+    foreach (var interfaceType in types)
+    {
+      services.AddTransient(interfaceType, handlerType);
+    }
+
+    return services;
   }
 }
