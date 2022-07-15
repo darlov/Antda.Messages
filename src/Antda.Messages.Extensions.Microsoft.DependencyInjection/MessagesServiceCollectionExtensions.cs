@@ -18,7 +18,7 @@ public static class MessagesServiceCollectionExtensions
   {
     services.TryAddTransient<IMessageSender, MessageSender>();
     services.TryAddTransient<IServiceResolver, MicrosoftServiceResolver>();
-    services.TryAddTransient<IMessageProcessorFactory, MessageProcessorFactory>();
+    services.TryAddSingleton<IMessageProcessorFactory, MessageProcessorFactory>();
     services.TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>));
 
     var middlewareBuilder = new MiddlewareBuilder();
@@ -57,7 +57,7 @@ public static class MessagesServiceCollectionExtensions
         return services;
       }
       
-      throw new NotSupportedException("Message handler should implemented IMessageHandler interface.");
+      throw new NotSupportedException("Message handler should implemented IMessageHandler<in TMessage, TResult> interface.");
     }
     
     foreach (var interfaceType in types)

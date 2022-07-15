@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Antda.Messages.Extensions.Microsoft.DependencyInjection;
+﻿namespace Antda.Messages.Extensions.Microsoft.DependencyInjection;
 
 public class MicrosoftServiceResolver : IServiceResolver
 {

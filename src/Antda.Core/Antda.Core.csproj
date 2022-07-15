@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Description>The Antda core library.</Description>
+    <PackageTags>Antda</PackageTags>
   </PropertyGroup>
 
   <Import Project="..\Shared.props" />
