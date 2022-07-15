@@ -4,14 +4,13 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <Authors>Denis Arlovski</Authors>
-    <Company>Denis Arlovski</Company>
+    <Authors>Dzianis Arlovski</Authors>
+    <Company>Dzianis Arlovski</Company>
 
     <PackageId>$(AssemblyName)</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/darlov/Antda</RepositoryUrl>
-    <PackageTags>Antda</PackageTags>
     <IsPackable>true</IsPackable>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

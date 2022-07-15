@@ -92,6 +92,7 @@ public class MessagesServiceCollectionExtensionsTests
     var sender = provider.GetRequiredService<IMessageSender>();
 
     var defaultMessage = new DefaultMessage("Test");
+
     var _ = await sender.SendAsync(defaultMessage);
 
     Assert.Equal(customPropText, defaultMessage.CustomProp);
