@@ -1,4 +1,4 @@
-﻿namespace Antda.Messages;
+﻿namespace Antda.Messages.DependencyInjection;
 
 public interface IServiceResolver
 {

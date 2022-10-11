@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Antda.Core.Exceptions;
 using Antda.Core.Extensions;
 using Antda.Core.Helpers;
 using Antda.Messages.Middleware;
@@ -16,11 +17,14 @@ public static class MiddlewareBuilderExtensions
   public static IMiddlewareBuilder UseMiddleware<TMiddleware>(this IMiddlewareBuilder builder)
     where TMiddleware : IMessageMiddleware
   {
+    Throw.If.ArgumentNull(builder);
     return builder.UseMiddleware(typeof(TMiddleware));
   }
 
   public static IMiddlewareBuilder UseMiddleware(this IMiddlewareBuilder builder, Type middlewareType)
   {
+    Throw.If.ArgumentNull(builder);
+    Throw.If.ArgumentNull(middlewareType);
     var middlewareInterface = TypeHelper.FindTypes(middlewareType, typeof(IMessageMiddleware<,>)).FirstOrDefault()
                               ?? TypeHelper.FindTypes(middlewareType, typeof(IMessageMiddleware<>)).FirstOrDefault();
 
@@ -50,7 +54,12 @@ public static class MiddlewareBuilderExtensions
     {
       return ctx =>
       {
-        var messageMiddlewareType = genericMiddlewareType.MakeGenericType(ctx.GetType().GenericTypeArguments);
+        var key = new MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
+        var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, (keyValue) =>
+        {
+          var (middlewareTypeKey, messageTypeKey, resultTypeKey) = keyValue;
+          return middlewareTypeKey.MakeGenericType(messageTypeKey, resultTypeKey);
+        });
 
         if (ctx.ServiceResolver.GetService(messageMiddlewareType) is not IMessageMiddleware middleware)
         {
@@ -70,13 +79,15 @@ public static class MiddlewareBuilderExtensions
     {
       return ctx =>
       {
-        if (ctx.ServiceResolver.GetService(middlewareType) is not IMessageMiddleware middleware)
+        if (ctx.ServiceResolver.GetService(middlewareType) is IMessageMiddleware middleware)
         {
-          throw new InvalidOperationException($"Can't resolve middleware with type {middlewareType}");
+          return middleware.InvokeAsync(ctx, next, ctx.CancellationToken);
         }
 
-        return middleware.InvokeAsync(ctx, next, ctx.CancellationToken);
+        throw new InvalidOperationException($"Can't resolve middleware with type {middlewareType}");
       };
     });
   }
+
+  private record MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }

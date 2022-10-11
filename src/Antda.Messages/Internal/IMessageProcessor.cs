@@ -7,11 +7,11 @@ public interface IMessageProcessor
 
 public interface IMessageProcessor<TResult> : IMessageProcessor
 {
-  Task<TResult?> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken);
+  Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken);
 }
 
 public interface IMessageProcessor<in TMessage, TResult> : IMessageProcessor<TResult>
   where TMessage : IMessage<TResult>
 {
-  Task<TResult?> ProcessAsync(TMessage message, CancellationToken cancellationToken);
+  Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken);
 }

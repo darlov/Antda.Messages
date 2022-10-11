@@ -2,9 +2,9 @@
 
 namespace Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests.Handlers;
 
-public class NoResultHandler : MessageHandler<NoResultMessage>
+public class NoResultHandler<T> : MessageHandler<T> where T : IMessage<Unit>
 {
-  public override Task<Unit> HandleAsync(NoResultMessage message, CancellationToken cancellationToken)
+  public override Task<Unit> HandleAsync(T message, CancellationToken cancellationToken)
   {
     return Task.FromResult(Unit.Value);
   }

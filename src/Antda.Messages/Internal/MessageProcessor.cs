@@ -1,4 +1,6 @@
-﻿using Antda.Messages.Middleware;
+﻿using Antda.Messages.DependencyInjection;
+using Antda.Messages.Exceptions;
+using Antda.Messages.Middleware;
 
 namespace Antda.Messages.Internal;
 
@@ -6,29 +8,45 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
   where TMessage : IMessage<TResult>
 {
   private readonly IServiceResolver _serviceResolver;
-  private readonly MessageDelegate _messageDelegate;
+  private readonly IMemoryCacheProvider<Type> _typeCacheProvider;
+  private readonly IMemoryCacheProvider<MessageDelegate> _messageDelegateCacheProvider;
+  private readonly Func<Type, MessageDelegate> _createMessageDelegate;
 
-  public MessageProcessor(IServiceResolver serviceResolver, IMiddlewareProvider middlewareBuilder)
+  public MessageProcessor(
+    IServiceResolver serviceResolver,
+    IMemoryCacheProvider<Type> typeCacheProvider,
+    IMemoryCacheProvider<MessageDelegate> messageDelegateCacheProvider,
+    IMiddlewareProvider middlewareProvider)
   {
     _serviceResolver = serviceResolver;
-    _messageDelegate = middlewareBuilder.Create(typeof(TMessage));
+    _typeCacheProvider = typeCacheProvider;
+    _messageDelegateCacheProvider = messageDelegateCacheProvider;
+
+    _createMessageDelegate = middlewareProvider.Create;
   }
 
-  public async Task<TResult?> ProcessAsync(TMessage message, CancellationToken cancellationToken)
+  public async Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken)
   {
-    var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, cancellationToken);
-    await _messageDelegate(context);
+    var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, _typeCacheProvider, cancellationToken);
 
-    return context.Result;
+    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _createMessageDelegate);
+    await messageDelegate(context);
+    
+    if (!context.HasResult)
+    {
+      throw new MessageProcessingException($"The result of message has no set for {typeof(TMessage)} message type", message);
+    }
+
+    return (TResult)context.Result!;
   }
 
-  public Task<TResult?> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken)
+  public Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken)
   {
-    return ProcessAsync((TMessage)message, cancellationToken);
+    return this.ProcessAsync((TMessage)message, cancellationToken);
   }
 
   public async Task<object?> ProcessAsync(object message, CancellationToken cancellationToken)
   {
-    return await ProcessAsync((TMessage)message, cancellationToken);
+    return await this.ProcessAsync((TMessage)message, cancellationToken);
   }
 }

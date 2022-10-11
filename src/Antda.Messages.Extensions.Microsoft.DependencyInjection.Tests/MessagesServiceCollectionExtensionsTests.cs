@@ -12,7 +12,7 @@ public class MessagesServiceCollectionExtensionsTests
   {
     var services = new ServiceCollection();
 
-    services.AddAntdaMessages(GetType().Assembly)
+    services.AddAntdaMessages(this.GetType().Assembly)
       .UseHandleMessages();
 
     await using var provider = services.BuildServiceProvider();
@@ -34,7 +34,7 @@ public class MessagesServiceCollectionExtensionsTests
     var services = new ServiceCollection();
     services.AddTransient(_ => new ModifyResultMiddleware(additionalText));
 
-    services.AddAntdaMessages(GetType().Assembly)
+    services.AddAntdaMessages(this.GetType().Assembly)
       .UseHandleMessages()
       .UseMiddleware<ModifyResultMiddleware>();
 
@@ -56,8 +56,8 @@ public class MessagesServiceCollectionExtensionsTests
     services.AddAntdaMessagesCore()
       .UseHandleMessages();
 
-    services.AddTransient<IMessageHandler<DefaultMessage, string>, DefaultHandler>();
-    services.AddTransient<IMessageHandler<NoResultMessage, Unit>, NoResultHandler>();
+    services.AddMessageHandler<DefaultHandler>();
+    services.AddMessageHandler<NoResultHandler<NoResultMessage>>();
 
     await using var provider = services.BuildServiceProvider();
 
@@ -80,8 +80,9 @@ public class MessagesServiceCollectionExtensionsTests
     var services = new ServiceCollection();
 
     services.AddTransient(_ => new CustomTypeMiddleware(customPropText));
-    services.AddTransient<IMessageHandler<DefaultMessage, string>, DefaultHandler>();
-    services.AddTransient<IMessageHandler<NoResultMessage, Unit>, NoResultHandler>();
+    services.AddMessageHandler<DefaultHandler>();
+    services.AddMessageHandler<NoResultHandler<NoResultMessage>>();
+    services.AddMessageHandler<NoResultHandler<NoResultWithCustomMessage>>();
       
     services.AddAntdaMessagesCore()
       .UseMiddleware<CustomTypeMiddleware>()

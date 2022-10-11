@@ -14,8 +14,7 @@ public class CustomTypeMiddleware : MessageMiddleware<ICustomInterface>
   public override Task InvokeAsync(IMessageContext<ICustomInterface> context, MessageDelegate next, CancellationToken cancellationToken)
   {
     context.Message.CustomProp = _modifyText;
-    
-    
-    return Task.CompletedTask;
+
+    return next(context);
   }
 }

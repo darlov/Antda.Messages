@@ -1,37 +1,35 @@
-﻿using System.Collections.Concurrent;
-using Antda.Core.Exceptions;
+﻿using Antda.Core.Exceptions;
+using Antda.Messages.DependencyInjection;
+using Antda.Messages.Exceptions;
 
 namespace Antda.Messages.Internal;
 
 public class MessageProcessorFactory : IMessageProcessorFactory
 {
-  private readonly ConcurrentDictionary<Type, Type> _messageProcessorTypes;
   private readonly IServiceResolver _serviceProvider;
+  private readonly IMemoryCacheProvider<Type> _memoryCacheProvider;
 
-  public MessageProcessorFactory(IServiceResolver serviceProvider)
+  public MessageProcessorFactory(IServiceResolver serviceProvider, IMemoryCacheProvider<Type> memoryCacheProvider)
   {
     _serviceProvider = serviceProvider;
-    _messageProcessorTypes = new ConcurrentDictionary<Type, Type>();
+    _memoryCacheProvider = memoryCacheProvider;
   }
 
-  public IMessageProcessor<TResult> Create<TMessage, TResult>(TMessage message)
-    where TMessage : IMessage<TResult>
+  public IMessageProcessor<TResult> Create<TResult>(IMessage<TResult> message)
   {
     Throw.If.ArgumentNull(message);
-
-    var processor = CreateProcessor<TResult>(message.GetType());
-    return (IMessageProcessor<TResult>)processor;
+    return this.CreateProcessor(message);
   }
 
-  private IMessageProcessor CreateProcessor<TResult>(Type messageType)
+  private IMessageProcessor<TResult> CreateProcessor<TResult>(IMessage<TResult> message)
   {
-    var processorType = _messageProcessorTypes.GetOrAdd(messageType, m => typeof(IMessageProcessor<,>).MakeGenericType(m, typeof(TResult)));
+    var processorType = _memoryCacheProvider.GetOrAdd(message.GetType(), messageType => typeof(IMessageProcessor<,>).MakeGenericType(messageType, typeof(TResult)));
 
-    if (_serviceProvider.GetService(processorType) is not IMessageProcessor processor)
+    if (_serviceProvider.GetService(processorType) is IMessageProcessor<TResult> processor)
     {
-      throw new InvalidOperationException($"Can't resolve message processor with type {processorType}");
+      return processor;
     }
 
-    return processor;
+    throw new MessageProcessingException($"Can't resolve message processor with type {processorType}", message);
   }
 }
