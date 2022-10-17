@@ -29,14 +29,14 @@ public class SomeService {
         _messageSender = messageSender;
     }
     
-    public Task SendMessageAsync()
+    public async Task SendMessageAsync()
     {
         var myMessage = new HelloMessage
         {
             Message = "Hello world!"
         }
         
-        HelloResponse response =  _messageSender.SendAsync(myMessage);
+        HelloResponse response = await _messageSender.SendAsync(myMessage);
         
         // use response data
         //...
