@@ -9,6 +9,7 @@ public static class Throw
   public static class If
   {
     [ContractAnnotation("argument:null=>halt;")]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ArgumentNull([System.Diagnostics.CodeAnalysis.NotNull] [NoEnumeration] object? argument, [CallerArgumentExpression("argument")] string? paramName = null)
     {
       if (argument is null)
@@ -18,6 +19,7 @@ public static class Throw
     }
 
     [ContractAnnotation("argument:null=>halt;")]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ArgumentNullOrEmpty([System.Diagnostics.CodeAnalysis.NotNull] string? argument, [CallerArgumentExpression("argument")] string? paramName = null)
     {
       if (argument is null)
@@ -32,6 +34,7 @@ public static class Throw
     }
 
     [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void ThrowArgumentNull(string? paramName)
     {
       throw new ArgumentNullException(paramName);

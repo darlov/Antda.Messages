@@ -9,13 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Antda.Messages.Extensions.Microsoft.DependencyInjection\Antda.Messages.Extensions.Microsoft.DependencyInjection.csproj"/>
-    <ProjectReference Include="..\..\Antda.Messages\Antda.Messages.csproj"/>
+    <ProjectReference Include="..\..\Antda.Messages.Extensions.Microsoft.DependencyInjection\Antda.Messages.Extensions.Microsoft.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Antda.Messages\Antda.Messages.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
   </ItemGroup>
 
 </Project>

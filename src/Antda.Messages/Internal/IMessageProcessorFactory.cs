@@ -2,6 +2,5 @@
 
 public interface IMessageProcessorFactory
 {
-  IMessageProcessor<TResult> Create<TMessage, TResult>(TMessage message)
-    where TMessage : IMessage<TResult>;
+  IMessageProcessor<TResult> Create<TResult>(IMessage<TResult> message);
 }

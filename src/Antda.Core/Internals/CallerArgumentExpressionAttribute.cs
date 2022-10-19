@@ -1,11 +1,14 @@
 ﻿// ReSharper disable once CheckNamespace
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace System.Runtime.CompilerServices;
 
 /// <summary>
 /// Allows capturing of the expressions passed to a method.
 /// </summary>
 [AttributeUsage(AttributeTargets.Parameter)]
+[ExcludeFromCodeCoverage]
 internal sealed class CallerArgumentExpressionAttribute : Attribute
 {
   /// <summary>
@@ -14,7 +17,7 @@ internal sealed class CallerArgumentExpressionAttribute : Attribute
   /// <param name="parameterName">The name of the targeted parameter.</param>
   public CallerArgumentExpressionAttribute(string parameterName)
   {
-    ParameterName = parameterName;
+    this.ParameterName = parameterName;
   }
 
   /// <summary>

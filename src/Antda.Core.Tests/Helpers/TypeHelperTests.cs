@@ -55,6 +55,4 @@ public class TypeHelperTests
     types = TypeHelper.FindTypes(typeof(ClassWithGenericClass3), typeof(ICollection));
     Assert.Empty(types);
   }
-
-
 }

@@ -1,10 +1,19 @@
-﻿namespace Antda.Messages.Middleware;
+﻿using Antda.Messages.DependencyInjection;
+using Antda.Messages.Internal;
+
+namespace Antda.Messages.Middleware;
 
 public interface IMessageContext
 {
   IServiceResolver ServiceResolver { get; }
+  
+  IMemoryCacheProvider<Type> TypeCache { get; }
 
   CancellationToken CancellationToken { get; }
+  
+  Type MessageType { get; }
+  
+  Type ResultType { get; }
 }
 
 public interface IMessageContext<out TMessage> : IMessageContext
@@ -15,6 +24,7 @@ public interface IMessageContext<out TMessage> : IMessageContext
 public interface IMessageContext<out TMessage, TResult> : IMessageContext<TMessage>
   where TMessage : IMessage<TResult>
 {
-
   TResult? Result { get; set; }
+  
+  bool HasResult { get; }
 }

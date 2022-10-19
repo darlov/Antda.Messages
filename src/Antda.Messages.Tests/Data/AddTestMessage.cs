@@ -4,7 +4,7 @@ public class AddTestMessage : IMessage<string>
 {
   public AddTestMessage(string payload)
   {
-    Payload = payload;
+    this.Payload = payload;
   }
 
   public string Payload { get; }

@@ -12,11 +12,14 @@ public class MessageSender : IMessageSender
     _messageProcessorFactory = messageProcessorFactory;
   }
 
-  public async Task<TResult?> SendAsync<TResult>(IMessage<TResult> message, CancellationToken cancellationToken = default)
+  public Task<TResult> SendAsync<TResult>(IMessage<TResult> message, CancellationToken cancellationToken = default)
   {
     Throw.If.ArgumentNull(message);
 
-    var messageProcessor = _messageProcessorFactory.Create<IMessage<TResult>, TResult>(message);
-    return await messageProcessor.ProcessAsync(message, cancellationToken);
+    var messageProcessor = _messageProcessorFactory.Create(message);
+    return messageProcessor.ProcessAsync(message, cancellationToken);
   }
+
+  public Task SendAsync<TResult>(IMessage message, CancellationToken cancellationToken = default)
+    => this.SendAsync(message, cancellationToken);
 }

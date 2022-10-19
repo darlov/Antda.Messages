@@ -24,14 +24,14 @@ public class MessageSenderBenchmark
   }
 
   [Benchmark]
-  public Task MessageSender()
+  public async Task MessageSender()
   {
-    return _messageSender.SendAsync(_message);
+    var _ = await _messageSender.SendAsync(_message);
   }
 
   [Benchmark(Baseline = true)]
-  public Task DirectCall()
+  public async Task DirectCall()
   {
-    return _serviceProvider.GetRequiredService<IMessageHandler<BaseMessage, string>>().HandleAsync(_message, CancellationToken.None);
+    var _ = await _serviceProvider.GetRequiredService<IMessageHandler<BaseMessage, string>>().HandleAsync(_message, CancellationToken.None);
   }
 }

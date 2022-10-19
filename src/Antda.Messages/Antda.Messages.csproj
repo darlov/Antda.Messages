@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Antda.Core\Antda.Core.csproj" />
+  
   </ItemGroup>
 
   <Import Project="..\Shared.props" />

@@ -11,7 +11,7 @@ public abstract class MessageMiddleware<TMessage> : MessageMiddleware, IMessageM
 
   public override Task InvokeAsync(IMessageContext context, MessageDelegate next, CancellationToken cancellationToken)
   {
-    return InvokeAsync((IMessageContext<TMessage>)context, next, cancellationToken);
+    return this.InvokeAsync((IMessageContext<TMessage>)context, next, cancellationToken);
   }
 }
 
@@ -22,6 +22,6 @@ public abstract class MessageMiddleware<TMessage, TResult> : MessageMiddleware<T
 
   public override Task InvokeAsync(IMessageContext<TMessage> context, MessageDelegate next, CancellationToken cancellationToken)
   {
-    return InvokeAsync((IMessageContext<TMessage, TResult>)context, next, cancellationToken);
+    return this.InvokeAsync((IMessageContext<TMessage, TResult>)context, next, cancellationToken);
   }
 }

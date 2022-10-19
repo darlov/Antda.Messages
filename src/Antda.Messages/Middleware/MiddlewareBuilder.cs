@@ -14,16 +14,11 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 
   public MessageDelegate Create(Type messageType)
   {
-    MessageDelegate invokeDelegate = _ => Task.CompletedTask;
+    Task InvokeDelegate(IMessageContext _) => Task.CompletedTask;
 
-    var middlewares = GetMiddlewares(messageType);
+    var middlewares = this.GetMiddlewares(messageType);
 
-    foreach (var middleware in middlewares.Reverse())
-    {
-      invokeDelegate = middleware(invokeDelegate);
-    }
-
-    return invokeDelegate;
+    return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, (current, middleware) => middleware(current));
   }
 
   private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)
