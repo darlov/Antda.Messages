@@ -68,8 +68,7 @@ public class MessagesServiceCollectionExtensionsTests
 
     Assert.Equal("Test", defaultResult);
     
-    var noResultMessage = new NoResultMessage();
-    await sender.SendAsync(noResultMessage);
+    await sender.SendAsync<NoResultMessage>();
   }
   
   [Fact]
