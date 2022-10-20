@@ -6,6 +6,7 @@
 
     <Authors>Dzianis Arlovski</Authors>
     <Company>Dzianis Arlovski</Company>
+    <Copyright>Copyright © Dzianis Arlouski, 2022</Copyright>
 
     <PackageId>$(AssemblyName)</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

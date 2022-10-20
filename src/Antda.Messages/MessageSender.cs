@@ -20,6 +20,6 @@ public class MessageSender : IMessageSender
     return messageProcessor.ProcessAsync(message, cancellationToken);
   }
 
-  public Task SendAsync<TResult>(IMessage message, CancellationToken cancellationToken = default)
-    => this.SendAsync(message, cancellationToken);
+  public Task SendAsync(IMessage message, CancellationToken cancellationToken = default)
+    => this.SendAsync<Unit>(message, cancellationToken);
 }

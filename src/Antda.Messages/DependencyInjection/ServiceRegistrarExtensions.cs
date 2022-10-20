@@ -13,24 +13,24 @@ public static class ServiceRegistrarExtensions
         where TServiceResolver : IServiceResolver
     {
         Throw.If.ArgumentNull(serviceRegistrar);
-
-        serviceRegistrar.TryAddSingleton<IServiceResolver, TServiceResolver>();
-        serviceRegistrar.TryAddTransient<IMessageSender, MessageSender>();
-        serviceRegistrar.TryAddSingleton<IMessageProcessorFactory, MessageProcessorFactory>();
-        serviceRegistrar.TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>));
-        serviceRegistrar.TryAddSingleton(typeof(IMemoryCacheProvider<>), typeof(MemoryCacheProvider<>));
-
         var middlewareBuilder = new MiddlewareBuilder();
-        serviceRegistrar.AddSingleton<IMiddlewareProvider>(middlewareBuilder);
 
-        serviceRegistrar.TryAddTransient(typeof(HandleMessageMiddleware<,>));
+        serviceRegistrar
+            .TryAddSingleton<IServiceResolver, TServiceResolver>()
+            .TryAddTransient<IMessageSender, MessageSender>()
+            .TryAddSingleton<IMessageProcessorFactory, MessageProcessorFactory>()
+            .TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>))
+            .TryAddSingleton(typeof(IMemoryCacheProvider<>), typeof(MemoryCacheProvider<>))
+            .TryAddTransient(typeof(HandleMessageMiddleware<,>))
+            .AddSingleton<IMiddlewareProvider>(middlewareBuilder);
 
         return middlewareBuilder;
     }
-    
+
     public static IMiddlewareBuilder AddAntdaMessages<TServiceResolver>(this IServiceRegistrar services, params Assembly[] assembliesToScan)
         where TServiceResolver : IServiceResolver
     {
+        Throw.If.ArgumentNullOrEmpty(assembliesToScan);
         return services.AddAntdaMessages<TServiceResolver>((IEnumerable<Assembly>)assembliesToScan);
     }
 
@@ -38,7 +38,7 @@ public static class ServiceRegistrarExtensions
         where TServiceResolver : IServiceResolver
     {
         var builder = serviceRegistrar.AddAntdaMessagesCore<TServiceResolver>();
-    
+
         foreach (var typeInfo in TypeHelper.FindAllowedTypes(assembliesToScan))
         {
             serviceRegistrar.AddMessageHandlerInternal(typeInfo, true);
@@ -46,13 +46,13 @@ public static class ServiceRegistrarExtensions
 
         return builder;
     }
-    
-    public static IServiceRegistrar AddMessageHandler<T>(this IServiceRegistrar serviceRegistrar) 
+
+    public static IServiceRegistrar AddMessageHandler<T>(this IServiceRegistrar serviceRegistrar)
         => serviceRegistrar.AddMessageHandler(typeof(T));
-    
+
     public static IServiceRegistrar AddMessageHandler(this IServiceRegistrar serviceRegistrar, Type handlerType)
         => serviceRegistrar.AddMessageHandlerInternal(handlerType, false);
-  
+
     private static IServiceRegistrar AddMessageHandlerInternal(this IServiceRegistrar serviceRegistrar, Type handlerType, bool skipNotSupported)
     {
         Throw.If.ArgumentNull(serviceRegistrar);
@@ -65,7 +65,7 @@ public static class ServiceRegistrarExtensions
             {
                 return serviceRegistrar;
             }
-      
+
             throw new NotSupportedException("Message handler should implemented IMessageHandler<in TMessage, TResult> interface");
         }
 
@@ -73,7 +73,7 @@ public static class ServiceRegistrarExtensions
         {
             throw new NotSupportedException($"The open generic handler is not supported for {handlerType}");
         }
-    
+
         foreach (var interfaceType in types)
         {
             serviceRegistrar.AddTransient(interfaceType, handlerType);
@@ -81,6 +81,4 @@ public static class ServiceRegistrarExtensions
 
         return serviceRegistrar;
     }
-    
-
 }

@@ -3,7 +3,7 @@
 Set of libraries. 
 
 | Package | Stable | Pre-release |
-|:--:|:--:|:--:|
+|:--|:--:|:--:|
 | Antda.Core |[![Nuget](https://img.shields.io/nuget/v/Antda.Core.svg)](https://www.nuget.org/packages/Antda.Core)|[![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Antda.Core)](https://www.nuget.org/packages/Antda.Core)|
 | Antda.Messages |[![Nuget](https://img.shields.io/nuget/v/Antda.Messages.svg)](https://www.nuget.org/packages/Antda.Messages)|[![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Antda.Messages)](https://www.nuget.org/packages/Antda.Messages)|
 | Antda.Messages.Extensions.Microsoft.DependencyInjection |[![Nuget](https://img.shields.io/nuget/v/Antda.Messages.Extensions.Microsoft.DependencyInjection.svg)](https://www.nuget.org/packages/Antda.Messages.Extensions.Microsoft.DependencyInjection)|[![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Antda.Messages.Extensions.Microsoft.DependencyInjection)](https://www.nuget.org/packages/Antda.Messages.Extensions.Microsoft.DependencyInjection)|
@@ -29,14 +29,14 @@ public class SomeService {
         _messageSender = messageSender;
     }
     
-    public Task SendMessageAsync()
+    public async Task SendMessageAsync()
     {
         var myMessage = new HelloMessage
         {
             Message = "Hello world!"
         }
         
-        HelloResponse response =  _messageSender.SendAsync(myMessage);
+        HelloResponse response = await _messageSender.SendAsync(myMessage);
         
         // use response data
         //...
