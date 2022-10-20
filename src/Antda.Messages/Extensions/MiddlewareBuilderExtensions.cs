@@ -3,11 +3,13 @@ using Antda.Core.Exceptions;
 using Antda.Core.Extensions;
 using Antda.Core.Helpers;
 using Antda.Messages.Middleware;
+using JetBrains.Annotations;
 
 namespace Antda.Messages.Extensions;
 
 public static class MiddlewareBuilderExtensions
 {
+  [PublicAPI]
   public static IMiddlewareBuilder Use<TMessage>(this IMiddlewareBuilder builder, Func<MessageDelegate, MessageDelegate> next)
     => builder.Use(typeof(TMessage), next);
 
