@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.1;net6.0;net7.0</TargetFrameworks>
     <Description>The Antda core library.</Description>
     <PackageTags>Antda</PackageTags>
   </PropertyGroup>
@@ -9,7 +9,7 @@
   <Import Project="..\Shared.props" />
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
   </ItemGroup>
 
 
