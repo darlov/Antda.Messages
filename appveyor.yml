@@ -5,5 +5,8 @@ branches:
     - main
     - /release/.*/
     - /hotfix/.*/
+install:
+  - sh: sudo apt-get update
+  - sh: sudo apt-get install -y dotnet-sdk-7.0
 build_script:
   - sh: ./build.sh --target=CI --verbosity=diagnostic
