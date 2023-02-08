@@ -17,8 +17,6 @@ public class MemoryCacheProvider<T> : IMemoryCacheProvider<T>
         Throw.If.ArgumentNull(key);
         Throw.If.ArgumentNull(factoryFunc);
 
-        return _dictionary.TryGetValue(key, out var value) 
-            ? value 
-            : _dictionary.GetOrAdd(key, static (keyValue, factoryFuncValue) => factoryFuncValue((TKey)keyValue), factoryFunc);
+        return _dictionary.GetOrAdd(key, static (keyValue, factoryFuncValue) => factoryFuncValue((TKey)keyValue), factoryFunc);
     }
 }

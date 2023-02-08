@@ -18,7 +18,7 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 
     var middlewares = this.GetMiddlewares(messageType);
 
-    return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, (current, middleware) => middleware(current));
+    return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, static (current, middleware) => middleware(current));
   }
 
   private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)

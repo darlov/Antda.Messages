@@ -57,7 +57,7 @@ public static class MiddlewareBuilderExtensions
       return ctx =>
       {
         var key = new MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
-        var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, (keyValue) =>
+        var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, static (keyValue) =>
         {
           var (middlewareTypeKey, messageTypeKey, resultTypeKey) = keyValue;
           return middlewareTypeKey.MakeGenericType(messageTypeKey, resultTypeKey);
