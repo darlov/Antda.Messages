@@ -1,0 +1,41 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET Build
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+  release:
+    types: [ published ]
+    
+env:
+  ANTDA_GITHUB_PAT: ${{ secrets.ANTDA_GITHUB_PAT }}
+  ANTDA_NUGET__ApiKey: ${{ secrets.ANTDA_NUGET__ApiKey }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Expose GitHub Runtime
+      uses: actions/github-script@v6
+      with:
+        script: |
+          core.exportVariable("ACTIONS_RUNTIME_URL", process.env.ACTIONS_RUNTIME_URL);
+          core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN);
+          core.setSecret(process.env.ACTIONS_RUNTIME_TOKEN);
+    - name: Build
+      run: sh build.sh --target=CI --verbosity=diagnostic
+

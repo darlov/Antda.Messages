@@ -16,10 +16,10 @@ public static class ServiceRegistrarExtensions
         var middlewareBuilder = new MiddlewareBuilder();
 
         serviceRegistrar
-            .TryAddTransient<IServiceResolver, TServiceResolver>()
-            .TryAddTransient<IMessageSender, MessageSender>()
-            .TryAddTransient<IMessageProcessorFactory, MessageProcessorFactory>()
-            .TryAddTransient(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>))
+            .TryAddSingleton<IServiceResolver, TServiceResolver>()
+            .TryAddSingleton<IMessageSender, MessageSender>()
+            .TryAddSingleton<IMessageProcessorFactory, MessageProcessorFactory>()
+            .TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>))
             .TryAddSingleton(typeof(IMemoryCacheProvider<>), typeof(MemoryCacheProvider<>))
             .TryAddTransient(typeof(HandleMessageMiddleware<,>))
             .AddSingleton<IMiddlewareProvider>(middlewareBuilder);

@@ -23,13 +23,13 @@ public class MessageProcessorFactory : IMessageProcessorFactory
 
   private IMessageProcessor<TResult> CreateProcessor<TResult>(IMessage<TResult> message)
   {
-    var processorType = _memoryCacheProvider.GetOrAdd(message.GetType(), messageType => typeof(IMessageProcessor<,>).MakeGenericType(messageType, typeof(TResult)));
+    var processorType = _memoryCacheProvider.GetOrAdd(message.GetType(), static messageType => typeof(IMessageProcessor<,>).MakeGenericType(messageType, typeof(TResult)));
 
     if (_serviceProvider.GetService(processorType) is IMessageProcessor<TResult> processor)
     {
       return processor;
     }
 
-    throw new MessageProcessingException($"Can't resolve message processor with type {processorType}", message);
+    throw new MessageProcessingException($"Couldn't resolve message processor with type {processorType}", message);
   }
 }

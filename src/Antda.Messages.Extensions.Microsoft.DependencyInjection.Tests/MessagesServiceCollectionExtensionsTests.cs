@@ -93,7 +93,7 @@ public class MessagesServiceCollectionExtensionsTests
 
     var defaultMessage = new DefaultMessage("Test");
 
-    var _ = await sender.SendAsync(defaultMessage);
+    _ = await sender.SendAsync(defaultMessage);
 
     Assert.Equal(customPropText, defaultMessage.CustomProp);
     

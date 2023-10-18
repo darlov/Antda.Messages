@@ -57,7 +57,7 @@ public static class MiddlewareBuilderExtensions
       return ctx =>
       {
         var key = new MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
-        var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, (keyValue) =>
+        var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, static (keyValue) =>
         {
           var (middlewareTypeKey, messageTypeKey, resultTypeKey) = keyValue;
           return middlewareTypeKey.MakeGenericType(messageTypeKey, resultTypeKey);
@@ -65,7 +65,7 @@ public static class MiddlewareBuilderExtensions
 
         if (ctx.ServiceResolver.GetService(messageMiddlewareType) is not IMessageMiddleware middleware)
         {
-          throw new InvalidOperationException($"Can't resolve middleware with type {messageMiddlewareType}");
+          throw new InvalidOperationException($"Couldn't resolve middleware with type {messageMiddlewareType}");
         }
 
         return middleware.InvokeAsync(ctx, next, ctx.CancellationToken);
@@ -86,10 +86,10 @@ public static class MiddlewareBuilderExtensions
           return middleware.InvokeAsync(ctx, next, ctx.CancellationToken);
         }
 
-        throw new InvalidOperationException($"Can't resolve middleware with type {middlewareType}");
+        throw new InvalidOperationException($"Couldn't resolve middleware with type {middlewareType}");
       };
     });
   }
-
+  
   private record MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }
