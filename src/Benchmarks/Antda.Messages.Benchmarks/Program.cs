@@ -1,3 +1,4 @@
-﻿using BenchmarkDotNet.Running;
+﻿using Antda.Messages.Benchmarks;
+using BenchmarkDotNet.Running;
 
-BenchmarkRunner.Run(typeof(Program).Assembly);
+BenchmarkRunner.Run<MessageSenderBenchmark>();

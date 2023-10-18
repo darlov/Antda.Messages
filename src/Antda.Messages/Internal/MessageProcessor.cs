@@ -10,7 +10,7 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
   private readonly IServiceResolver _serviceResolver;
   private readonly IMemoryCacheProvider<Type> _typeCacheProvider;
   private readonly IMemoryCacheProvider<MessageDelegate> _messageDelegateCacheProvider;
-  private readonly Func<Type, MessageDelegate> _createMessageDelegate;
+  private readonly IMiddlewareProvider _middlewareProvider;
 
   public MessageProcessor(
     IServiceResolver serviceResolver,
@@ -21,15 +21,14 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
     _serviceResolver = serviceResolver;
     _typeCacheProvider = typeCacheProvider;
     _messageDelegateCacheProvider = messageDelegateCacheProvider;
-
-    _createMessageDelegate = middlewareProvider.Create;
+    _middlewareProvider = middlewareProvider;
   }
 
   public async Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken)
   {
     var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, _typeCacheProvider, cancellationToken);
 
-    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _createMessageDelegate);
+    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _middlewareProvider.Create);
     await messageDelegate(context);
     
     if (!context.HasResult)
@@ -40,13 +39,9 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
     return (TResult)context.Result!;
   }
 
-  public Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken)
-  {
-    return this.ProcessAsync((TMessage)message, cancellationToken);
-  }
+  public Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken) 
+    => this.ProcessAsync((TMessage)message, cancellationToken);
 
   public async Task<object?> ProcessAsync(object message, CancellationToken cancellationToken)
-  {
-    return await this.ProcessAsync((TMessage)message, cancellationToken);
-  }
+    => await this.ProcessAsync((TMessage)message, cancellationToken);
 }

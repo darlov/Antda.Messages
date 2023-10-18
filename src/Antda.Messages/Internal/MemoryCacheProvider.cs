@@ -3,14 +3,9 @@ using Antda.Core.Exceptions;
 
 namespace Antda.Messages.Internal;
 
-public class MemoryCacheProvider<T> : IMemoryCacheProvider<T>
+public class MemoryCacheProvider<T> : IMemoryCacheProvider<T> 
 {
-    private readonly ConcurrentDictionary<object, T> _dictionary;
-
-    public MemoryCacheProvider()
-    {
-        _dictionary = new ConcurrentDictionary<object, T>();
-    }
+    private readonly ConcurrentDictionary<object, T> _dictionary = new();
 
     public T GetOrAdd<TKey>(TKey key, Func<TKey, T> factoryFunc)
     {

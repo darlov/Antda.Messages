@@ -30,6 +30,6 @@ public class MessageProcessorFactory : IMessageProcessorFactory
       return processor;
     }
 
-    throw new MessageProcessingException($"Can't resolve message processor with type {processorType}", message);
+    throw new MessageProcessingException($"Couldn't resolve message processor with type {processorType}", message);
   }
 }
