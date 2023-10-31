@@ -4,9 +4,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <Authors>Dzianis Arlovski</Authors>
-    <Company>Dzianis Arlovski</Company>
-    <Copyright>Copyright © Dzianis Arlouski, 2022</Copyright>
+    <Authors>Dzianis Arlouski</Authors>
+    <Company>Dzianis Arlouski</Company>
+    <Copyright>Copyright © Dzianis Arlouski, 2023</Copyright>
 
     <PackageId>$(AssemblyName)</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -17,7 +17,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

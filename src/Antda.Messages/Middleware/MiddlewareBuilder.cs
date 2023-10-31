@@ -6,6 +6,13 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 {
   private readonly IList<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> _middlewares = new List<(Type Type, Func<MessageDelegate, MessageDelegate> Delegate)>();
 
+  private readonly Func<Type, MessageDelegate> _factory;
+
+  public MiddlewareBuilder()
+  {
+    _factory = this.Create;
+  }
+
   public IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> factory)
   {
     _middlewares.Add((messageType, factory));
@@ -20,6 +27,8 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 
     return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, static (current, middleware) => middleware(current));
   }
+
+  public Func<Type, MessageDelegate> GetFactory() => _factory;
 
   private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)
   {

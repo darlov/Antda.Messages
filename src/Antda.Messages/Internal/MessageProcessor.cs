@@ -8,28 +8,25 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
   where TMessage : IMessage<TResult>
 {
   private readonly IServiceResolver _serviceResolver;
-  private readonly IMemoryCacheProvider<Type> _typeCacheProvider;
   private readonly IMemoryCacheProvider<MessageDelegate> _messageDelegateCacheProvider;
   private readonly IMiddlewareProvider _middlewareProvider;
 
   public MessageProcessor(
     IServiceResolver serviceResolver,
-    IMemoryCacheProvider<Type> typeCacheProvider,
     IMemoryCacheProvider<MessageDelegate> messageDelegateCacheProvider,
     IMiddlewareProvider middlewareProvider)
   {
     _serviceResolver = serviceResolver;
-    _typeCacheProvider = typeCacheProvider;
     _messageDelegateCacheProvider = messageDelegateCacheProvider;
     _middlewareProvider = middlewareProvider;
   }
 
   public async Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken)
   {
-    var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, _typeCacheProvider, cancellationToken);
+    var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, cancellationToken);
 
-    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _middlewareProvider.Create);
-    await messageDelegate(context);
+    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _middlewareProvider.GetFactory());
+    await messageDelegate(context).ConfigureAwait(false);
     
     if (!context.HasResult)
     {
@@ -43,5 +40,5 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
     => this.ProcessAsync((TMessage)message, cancellationToken);
 
   public async Task<object?> ProcessAsync(object message, CancellationToken cancellationToken)
-    => await this.ProcessAsync((TMessage)message, cancellationToken);
+    => await this.ProcessAsync((TMessage)message, cancellationToken).ConfigureAwait(false);
 }

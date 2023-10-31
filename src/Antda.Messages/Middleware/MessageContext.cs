@@ -6,16 +6,16 @@ namespace Antda.Messages.Middleware;
 
 public abstract class MessageContext : IMessageContext
 {
-  protected MessageContext(IServiceResolver serviceResolver, IMemoryCacheProvider<Type> typeCache, CancellationToken cancellationToken)
+  private IMemoryCacheProvider<Type>? _typeCache;
+  protected MessageContext(IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {
     this.ServiceResolver = serviceResolver;
-    this.TypeCache = typeCache;
     this.CancellationToken = cancellationToken;
   }
 
   public IServiceResolver ServiceResolver { get; }
 
-  public IMemoryCacheProvider<Type> TypeCache { get; }
+  public IMemoryCacheProvider<Type> TypeCache => _typeCache ??= ServiceResolver.GetRequiredService<IMemoryCacheProvider<Type>>();
 
   public CancellationToken CancellationToken { get; }
   
@@ -26,8 +26,8 @@ public abstract class MessageContext : IMessageContext
 
 public abstract class MessageContext<TMessage> : MessageContext, IMessageContext<TMessage>
 {
-  protected MessageContext(TMessage message, IServiceResolver serviceResolver, IMemoryCacheProvider<Type> typeCache, CancellationToken cancellationToken) 
-    : base(serviceResolver, typeCache, cancellationToken)
+  protected MessageContext(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken) 
+    : base(serviceResolver, cancellationToken)
   {
     this.Message = message;
   }
@@ -43,8 +43,8 @@ public class MessageContext<TMessage, TResult> : MessageContext<TMessage>, IMess
   private bool _hasResult;
   private TResult? _result;
 
-  public MessageContext(TMessage message, IServiceResolver serviceResolver, IMemoryCacheProvider<Type> typeCache, CancellationToken cancellationToken)
-    : base(message, serviceResolver, typeCache, cancellationToken)
+  public MessageContext(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
+    : base(message, serviceResolver, cancellationToken)
   {
   }
 

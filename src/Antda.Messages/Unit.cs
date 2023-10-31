@@ -1,5 +1,8 @@
-﻿namespace Antda.Messages;
+﻿using JetBrains.Annotations;
 
+namespace Antda.Messages;
+
+[PublicAPI]
 public record Unit
 {
   // ReSharper disable once InconsistentNaming

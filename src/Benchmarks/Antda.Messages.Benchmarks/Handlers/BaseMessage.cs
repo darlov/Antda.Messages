@@ -1,5 +1,7 @@
-﻿namespace Antda.Messages.Benchmarks.Handlers;
+﻿using MediatR;
 
-public class BaseMessage : IMessage<string>
+namespace Antda.Messages.Benchmarks.Handlers;
+
+public class BaseMessage : IMessage<string>, IRequest<string>
 {
 }

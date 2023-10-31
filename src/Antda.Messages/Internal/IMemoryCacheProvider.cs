@@ -2,5 +2,6 @@
 
 public interface IMemoryCacheProvider<T>
 {
-    T GetOrAdd<TKey>(TKey key, Func<TKey, T> factoryFunc);
+    T GetOrAdd<TKey>(TKey key, Func<TKey, T> factoryFunc)
+      where TKey : notnull;
 }

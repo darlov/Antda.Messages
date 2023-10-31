@@ -13,9 +13,11 @@ public static class MiddlewareBuilderExtensions
   public static IMiddlewareBuilder Use<TMessage>(this IMiddlewareBuilder builder, Func<MessageDelegate, MessageDelegate> next)
     => builder.Use(typeof(TMessage), next);
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseHandleMessages(this IMiddlewareBuilder builder) 
     => builder.UseMiddleware(typeof(HandleMessageMiddleware<,>));
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseMiddleware<TMiddleware>(this IMiddlewareBuilder builder)
     where TMiddleware : IMessageMiddleware
   {
@@ -23,6 +25,7 @@ public static class MiddlewareBuilderExtensions
     return builder.UseMiddleware(typeof(TMiddleware));
   }
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseMiddleware(this IMiddlewareBuilder builder, Type middlewareType)
   {
     Throw.If.ArgumentNull(builder);
@@ -79,7 +82,9 @@ public static class MiddlewareBuilderExtensions
 
     builder.Use(messageType, next =>
     {
-      return ctx =>
+      return MessageDelegate;
+
+      Task MessageDelegate(IMessageContext ctx)
       {
         if (ctx.ServiceResolver.GetService(middlewareType) is IMessageMiddleware middleware)
         {
@@ -87,9 +92,9 @@ public static class MiddlewareBuilderExtensions
         }
 
         throw new InvalidOperationException($"Couldn't resolve middleware with type {middlewareType}");
-      };
+      }
     });
   }
   
-  private record MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
+  private readonly record struct MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }
