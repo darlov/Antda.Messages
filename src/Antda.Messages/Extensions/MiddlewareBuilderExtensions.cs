@@ -13,9 +13,11 @@ public static class MiddlewareBuilderExtensions
   public static IMiddlewareBuilder Use<TMessage>(this IMiddlewareBuilder builder, Func<MessageDelegate, MessageDelegate> next)
     => builder.Use(typeof(TMessage), next);
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseHandleMessages(this IMiddlewareBuilder builder) 
     => builder.UseMiddleware(typeof(HandleMessageMiddleware<,>));
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseMiddleware<TMiddleware>(this IMiddlewareBuilder builder)
     where TMiddleware : IMessageMiddleware
   {
@@ -23,6 +25,7 @@ public static class MiddlewareBuilderExtensions
     return builder.UseMiddleware(typeof(TMiddleware));
   }
 
+  [PublicAPI]
   public static IMiddlewareBuilder UseMiddleware(this IMiddlewareBuilder builder, Type middlewareType)
   {
     Throw.If.ArgumentNull(builder);
@@ -56,7 +59,7 @@ public static class MiddlewareBuilderExtensions
     {
       return ctx =>
       {
-        var key = new MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
+        var key = new MiddlewareBuilder.MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
         var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, static (keyValue) =>
         {
           var (middlewareTypeKey, messageTypeKey, resultTypeKey) = keyValue;
@@ -90,6 +93,4 @@ public static class MiddlewareBuilderExtensions
       };
     });
   }
-  
-  private record MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }

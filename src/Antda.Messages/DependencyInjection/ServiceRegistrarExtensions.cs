@@ -4,11 +4,13 @@ using Antda.Core.Extensions;
 using Antda.Core.Helpers;
 using Antda.Messages.Internal;
 using Antda.Messages.Middleware;
+using JetBrains.Annotations;
 
 namespace Antda.Messages.DependencyInjection;
 
 public static class ServiceRegistrarExtensions
 {
+    [PublicAPI]
     public static IMiddlewareBuilder AddAntdaMessagesCore<TServiceResolver>(this IServiceRegistrar serviceRegistrar)
         where TServiceResolver : IServiceResolver
     {
@@ -16,17 +18,16 @@ public static class ServiceRegistrarExtensions
         var middlewareBuilder = new MiddlewareBuilder();
 
         serviceRegistrar
-            .TryAddSingleton<IServiceResolver, TServiceResolver>()
-            .TryAddSingleton<IMessageSender, MessageSender>()
-            .TryAddSingleton<IMessageProcessorFactory, MessageProcessorFactory>()
-            .TryAddSingleton(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>))
-            .TryAddSingleton(typeof(IMemoryCacheProvider<>), typeof(MemoryCacheProvider<>))
+            .TryAddTransient<IServiceResolver, TServiceResolver>()
+            .TryAddTransient<IMessageSender, MessageSender>()
+            .TryAddSingleton(typeof(IMemoryCacheProvider<,>), typeof(MemoryCacheProvider<,>))
             .TryAddTransient(typeof(HandleMessageMiddleware<,>))
             .AddSingleton<IMiddlewareProvider>(middlewareBuilder);
 
         return middlewareBuilder;
     }
 
+    [PublicAPI]
     public static IMiddlewareBuilder AddAntdaMessages<TServiceResolver>(this IServiceRegistrar services, params Assembly[] assembliesToScan)
         where TServiceResolver : IServiceResolver
     {
@@ -34,6 +35,7 @@ public static class ServiceRegistrarExtensions
         return services.AddAntdaMessages<TServiceResolver>((IEnumerable<Assembly>)assembliesToScan);
     }
 
+    [PublicAPI]
     public static IMiddlewareBuilder AddAntdaMessages<TServiceResolver>(this IServiceRegistrar serviceRegistrar, IEnumerable<Assembly> assembliesToScan)
         where TServiceResolver : IServiceResolver
     {
@@ -47,9 +49,11 @@ public static class ServiceRegistrarExtensions
         return builder;
     }
 
+    [PublicAPI]
     public static IServiceRegistrar AddMessageHandler<T>(this IServiceRegistrar serviceRegistrar)
         => serviceRegistrar.AddMessageHandler(typeof(T));
 
+    [PublicAPI]
     public static IServiceRegistrar AddMessageHandler(this IServiceRegistrar serviceRegistrar, Type handlerType)
         => serviceRegistrar.AddMessageHandlerInternal(handlerType, false);
 
@@ -66,7 +70,7 @@ public static class ServiceRegistrarExtensions
                 return serviceRegistrar;
             }
 
-            throw new NotSupportedException("Message handler should implemented IMessageHandler<in TMessage, TResult> interface");
+            throw new NotSupportedException("Message handler should implemented IMessageHandler interface");
         }
 
         if (handlerType.IsOpenGeneric())

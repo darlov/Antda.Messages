@@ -4,7 +4,14 @@ namespace Antda.Messages.Middleware;
 
 public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
 {
-  private readonly IList<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> _middlewares = new List<(Type Type, Func<MessageDelegate, MessageDelegate> Delegate)>();
+  private readonly ICollection<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> _middlewares = new List<(Type Type, Func<MessageDelegate, MessageDelegate> Delegate)>();
+
+  private readonly Func<Type, MessageDelegate> _factory;
+
+  public MiddlewareBuilder()
+  {
+    _factory = this.Create;
+  }
 
   public IMiddlewareBuilder Use(Type messageType, Func<MessageDelegate, MessageDelegate> factory)
   {
@@ -21,6 +28,8 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
     return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, static (current, middleware) => middleware(current));
   }
 
+  public Func<Type, MessageDelegate> GetFactory() => _factory;
+
   private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)
   {
     foreach (var (type, middleware) in _middlewares)
@@ -31,4 +40,6 @@ public class MiddlewareBuilder : IMiddlewareBuilder, IMiddlewareProvider
       }
     }
   }
+  
+  public readonly record struct MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }

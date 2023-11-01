@@ -1,8 +1,9 @@
 ﻿using Antda.Messages.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Antda.Messages.Extensions.Microsoft.DependencyInjection;
 
-public class MicrosoftDependencyInjectionServiceResolver : IServiceResolver
+public class MicrosoftDependencyInjectionServiceResolver : IServiceResolver, ISupportRequiredServiceResolver
 {
   private readonly IServiceProvider _serviceProvider;
 
@@ -12,4 +13,7 @@ public class MicrosoftDependencyInjectionServiceResolver : IServiceResolver
   }
 
   public object? GetService(Type serviceType) => _serviceProvider.GetService(serviceType);
+
+  public object GetRequiredService(Type serviceType) => _serviceProvider.GetRequiredService(serviceType);
+
 }

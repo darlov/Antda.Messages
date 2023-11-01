@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using Antda.Core.Extensions;
+using JetBrains.Annotations;
 
 namespace Antda.Core.Helpers;
 
+[PublicAPI]
 public static class TypeHelper
 {
   public static IEnumerable<Type> FindAllowedTypes(IEnumerable<Assembly> assemblies)

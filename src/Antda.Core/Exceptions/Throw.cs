@@ -7,6 +7,7 @@ namespace Antda.Core.Exceptions;
 
 public static class Throw
 {
+  [PublicAPI]
   public static class If
   {
     [ContractAnnotation("argument:null=>halt;")]

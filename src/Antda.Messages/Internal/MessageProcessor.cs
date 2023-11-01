@@ -4,32 +4,17 @@ using Antda.Messages.Middleware;
 
 namespace Antda.Messages.Internal;
 
-public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, TResult>
+internal class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, TResult>
   where TMessage : IMessage<TResult>
 {
-  private readonly IServiceResolver _serviceResolver;
-  private readonly IMemoryCacheProvider<Type> _typeCacheProvider;
-  private readonly IMemoryCacheProvider<MessageDelegate> _messageDelegateCacheProvider;
-  private readonly IMiddlewareProvider _middlewareProvider;
+  private readonly MessageDelegate _messageDelegate;
 
-  public MessageProcessor(
-    IServiceResolver serviceResolver,
-    IMemoryCacheProvider<Type> typeCacheProvider,
-    IMemoryCacheProvider<MessageDelegate> messageDelegateCacheProvider,
-    IMiddlewareProvider middlewareProvider)
+  public MessageProcessor(IMiddlewareProvider middlewareProvider) => _messageDelegate = middlewareProvider.Create(typeof(TMessage));
+
+  public async Task<TResult> ProcessAsync(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {
-    _serviceResolver = serviceResolver;
-    _typeCacheProvider = typeCacheProvider;
-    _messageDelegateCacheProvider = messageDelegateCacheProvider;
-    _middlewareProvider = middlewareProvider;
-  }
-
-  public async Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken)
-  {
-    var context = new MessageContext<TMessage, TResult>(message, _serviceResolver, _typeCacheProvider, cancellationToken);
-
-    var messageDelegate = _messageDelegateCacheProvider.GetOrAdd(typeof(TMessage), _middlewareProvider.Create);
-    await messageDelegate(context);
+    var context = new MessageContext<TMessage, TResult>(message, serviceResolver, cancellationToken);
+    await _messageDelegate(context).ConfigureAwait(false);
     
     if (!context.HasResult)
     {
@@ -39,9 +24,6 @@ public class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, T
     return (TResult)context.Result!;
   }
 
-  public Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken) 
-    => this.ProcessAsync((TMessage)message, cancellationToken);
-
-  public async Task<object?> ProcessAsync(object message, CancellationToken cancellationToken)
-    => await this.ProcessAsync((TMessage)message, cancellationToken);
+  public Task<TResult> ProcessAsync(IMessage<TResult> message, IServiceResolver serviceResolver, CancellationToken cancellationToken) 
+    => this.ProcessAsync((TMessage)message, serviceResolver, cancellationToken);
 }

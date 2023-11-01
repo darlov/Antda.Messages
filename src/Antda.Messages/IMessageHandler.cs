@@ -1,5 +1,8 @@
-﻿namespace Antda.Messages;
+﻿using JetBrains.Annotations;
 
+namespace Antda.Messages;
+
+[PublicAPI]
 public interface IMessageHandler<in TMessage, TResult>
   where TMessage : IMessage<TResult>
 {
