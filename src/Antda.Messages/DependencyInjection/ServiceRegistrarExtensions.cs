@@ -20,9 +20,7 @@ public static class ServiceRegistrarExtensions
         serviceRegistrar
             .TryAddTransient<IServiceResolver, TServiceResolver>()
             .TryAddTransient<IMessageSender, MessageSender>()
-            .TryAddTransient<IMessageProcessorFactory, MessageProcessorFactory>()
-            .TryAddTransient(typeof(IMessageProcessor<,>), typeof(MessageProcessor<,>))
-            .TryAddSingleton(typeof(IMemoryCacheProvider<>), typeof(MemoryCacheProvider<>))
+            .TryAddSingleton(typeof(IMemoryCacheProvider<,>), typeof(MemoryCacheProvider<,>))
             .TryAddTransient(typeof(HandleMessageMiddleware<,>))
             .AddSingleton<IMiddlewareProvider>(middlewareBuilder);
 
@@ -72,7 +70,7 @@ public static class ServiceRegistrarExtensions
                 return serviceRegistrar;
             }
 
-            throw new NotSupportedException("Message handler should implemented IMessageHandler<in TMessage, TResult> interface");
+            throw new NotSupportedException("Message handler should implemented IMessageHandler interface");
         }
 
         if (handlerType.IsOpenGeneric())

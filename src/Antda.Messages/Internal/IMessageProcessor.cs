@@ -1,17 +1,18 @@
-﻿namespace Antda.Messages.Internal;
+﻿using Antda.Messages.DependencyInjection;
+
+namespace Antda.Messages.Internal;
 
 public interface IMessageProcessor
 {
-  Task<object?> ProcessAsync(object message, CancellationToken cancellationToken);
 }
 
-public interface IMessageProcessor<TResult> : IMessageProcessor
+internal interface IMessageProcessor<TResult> : IMessageProcessor
 {
-  Task<TResult> ProcessAsync(IMessage<TResult> message, CancellationToken cancellationToken);
+  Task<TResult> ProcessAsync(IMessage<TResult> message, IServiceResolver serviceResolver, CancellationToken cancellationToken);
 }
 
-public interface IMessageProcessor<in TMessage, TResult> : IMessageProcessor<TResult>
+internal interface IMessageProcessor<in TMessage, TResult> : IMessageProcessor<TResult>
   where TMessage : IMessage<TResult>
 {
-  Task<TResult> ProcessAsync(TMessage message, CancellationToken cancellationToken);
+  Task<TResult> ProcessAsync(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken);
 }

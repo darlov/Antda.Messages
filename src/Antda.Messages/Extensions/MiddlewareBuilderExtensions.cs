@@ -59,7 +59,7 @@ public static class MiddlewareBuilderExtensions
     {
       return ctx =>
       {
-        var key = new MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
+        var key = new MiddlewareBuilder.MiddlewareCacheKey(genericMiddlewareType, ctx.MessageType, ctx.ResultType);
         var messageMiddlewareType = ctx.TypeCache.GetOrAdd(key, static (keyValue) =>
         {
           var (middlewareTypeKey, messageTypeKey, resultTypeKey) = keyValue;
@@ -82,9 +82,7 @@ public static class MiddlewareBuilderExtensions
 
     builder.Use(messageType, next =>
     {
-      return MessageDelegate;
-
-      Task MessageDelegate(IMessageContext ctx)
+      return ctx =>
       {
         if (ctx.ServiceResolver.GetService(middlewareType) is IMessageMiddleware middleware)
         {
@@ -92,9 +90,7 @@ public static class MiddlewareBuilderExtensions
         }
 
         throw new InvalidOperationException($"Couldn't resolve middleware with type {middlewareType}");
-      }
+      };
     });
   }
-  
-  private readonly record struct MiddlewareCacheKey(Type GenericMiddlewareType, Type MessageType, Type ResultType);
 }

@@ -3,10 +3,9 @@ using Antda.Messages.Internal;
 
 namespace Antda.Messages.Middleware;
 
-
 public abstract class MessageContext : IMessageContext
 {
-  private IMemoryCacheProvider<Type>? _typeCache;
+  private IMemoryCacheProvider<MiddlewareBuilder.MiddlewareCacheKey, Type>? _typeCache;
   protected MessageContext(IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {
     this.ServiceResolver = serviceResolver;
@@ -15,7 +14,8 @@ public abstract class MessageContext : IMessageContext
 
   public IServiceResolver ServiceResolver { get; }
 
-  public IMemoryCacheProvider<Type> TypeCache => _typeCache ??= ServiceResolver.GetRequiredService<IMemoryCacheProvider<Type>>();
+  public IMemoryCacheProvider<MiddlewareBuilder.MiddlewareCacheKey, Type> TypeCache 
+    => _typeCache ??= ServiceResolver.GetRequiredService<IMemoryCacheProvider<MiddlewareBuilder.MiddlewareCacheKey, Type>>();
 
   public CancellationToken CancellationToken { get; }
   
