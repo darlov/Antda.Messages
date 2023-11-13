@@ -1,9 +1,27 @@
 ﻿create:
   include-footer: true
-  footer-heading: Where to get it
-  footer-content: You can download this release from [GitHub](https://github.com/darlov/Antda.Messages/releases/{milestone})
+  footer-heading: Packages
+  footer-content: >-
+    You can download this release from nuget:
+      - [Antda.Messages](https://www.nuget.org/packages/Antda.Messages/{milestone})
+      - [Antda.Messages.Core](https://www.nuget.org/packages/Antda.Messages.Core/{milestone})
+      - [Antda.Messages.Extensions.Microsoft.DependencyInjection](https://www.nuget.org/packages/Antda.Messages.Extensions.Microsoft.DependencyInjection/{milestone})
   footer-includes-milestone: true
   milestone-replace-text: '{milestone}'
+  include-sha-section: true
+  sha-section-heading: "SHA256 Hashes of the release artifacts"
+  sha-section-line-format: "- `{1}\t{0}`"
+
+close:
+# Whether to add comments to issues closed with the published milestone release.
+  use-issue-comments: true
+  issue-comment: |-
+    :tada: This issue has been resolved in version {milestone} :tada:
+
+    The release is available on nuget:
+      - [Antda.Messages](https://www.nuget.org/packages/Antda.Messages/{milestone})
+      - [Antda.Messages.Core](https://www.nuget.org/packages/Antda.Messages.Core/{milestone})
+      - [Antda.Messages.Extensions.Microsoft.DependencyInjection](https://www.nuget.org/packages/Antda.Messages.Extensions.Microsoft.DependencyInjection/{milestone})
 
 issue-labels-include:
   - breaking change
