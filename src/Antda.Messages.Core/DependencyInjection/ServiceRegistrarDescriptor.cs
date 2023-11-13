@@ -1,6 +1,6 @@
-﻿using Antda.Core.Exceptions;
+﻿using Antda.Messages.Core.Exceptions;
 
-namespace Antda.Messages.DependencyInjection;
+namespace Antda.Messages.Core.DependencyInjection;
 
 public class ServiceRegistrarDescriptor
 {

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Antda.Core.Extensions;
+using Antda.Messages.Core.Extensions;
 using JetBrains.Annotations;
 
-namespace Antda.Core.Helpers;
+namespace Antda.Messages.Core.Helpers;
 
 [PublicAPI]
 public static class TypeHelper

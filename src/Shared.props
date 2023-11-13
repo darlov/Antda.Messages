@@ -11,8 +11,9 @@
 
     <PackageId>$(AssemblyName)</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/darlov/Antda.Messages</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/darlov/Antda</RepositoryUrl>
+    <RepositoryUrl>https://github.com/darlov/Antda.Messages.git</RepositoryUrl>
     <IsPackable>true</IsPackable>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

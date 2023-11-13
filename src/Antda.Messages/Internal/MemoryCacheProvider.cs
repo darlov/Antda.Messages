@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using Antda.Core.Exceptions;
+using Antda.Messages.Core.Exceptions;
 
 namespace Antda.Messages.Internal;
 

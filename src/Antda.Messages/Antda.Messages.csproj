@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Antda.Core\Antda.Core.csproj" />
+    <ProjectReference Include="..\Antda.Messages.Core\Antda.Messages.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

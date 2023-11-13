@@ -1,4 +1,4 @@
-﻿using Antda.Messages.DependencyInjection;
+﻿using Antda.Messages.Core.DependencyInjection;
 using Antda.Messages.Internal;
 
 namespace Antda.Messages.Middleware;

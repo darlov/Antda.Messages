@@ -1,5 +1,5 @@
 ﻿
-namespace Antda.Messages.DependencyInjection;
+namespace Antda.Messages.Core.DependencyInjection;
 
 public interface IServiceRegistrar
 {

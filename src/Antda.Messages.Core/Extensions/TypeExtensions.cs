@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Antda.Core.Extensions;
+namespace Antda.Messages.Core.Extensions;
 
 [PublicAPI]
 public static class TypeExtensions

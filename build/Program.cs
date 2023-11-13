@@ -4,7 +4,7 @@ using Antda.Build.Extensions;
 return BuildHostBuilder
   .CreateDefault()
   .WithProjects(
-    "Antda.Core/Antda.Core.csproj",
+    "Antda.Messages.Core/Antda.Messages.Core.csproj",
     "Antda.Messages/Antda.Messages.csproj", 
     "Antda.Messages.Extensions.Microsoft.DependencyInjection/Antda.Messages.Extensions.Microsoft.DependencyInjection.csproj"
 )
