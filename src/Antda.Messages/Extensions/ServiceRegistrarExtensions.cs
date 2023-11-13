@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
-using Antda.Core.Exceptions;
-using Antda.Core.Extensions;
-using Antda.Core.Helpers;
+using Antda.Messages.Core.DependencyInjection;
+using Antda.Messages.Core.Exceptions;
+using Antda.Messages.Core.Extensions;
+using Antda.Messages.Core.Helpers;
 using Antda.Messages.Internal;
 using Antda.Messages.Middleware;
 using JetBrains.Annotations;
 
-namespace Antda.Messages.DependencyInjection;
+namespace Antda.Messages.Extensions;
 
 public static class ServiceRegistrarExtensions
 {

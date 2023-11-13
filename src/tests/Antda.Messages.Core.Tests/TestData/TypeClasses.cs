@@ -1,4 +1,4 @@
-﻿namespace Antda.Core.Tests.TestData;
+﻿namespace Antda.Messages.Core.Tests.TestData;
 
 
 public interface IMessage

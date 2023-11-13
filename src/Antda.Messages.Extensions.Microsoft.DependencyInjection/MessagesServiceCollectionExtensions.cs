@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Antda.Messages.DependencyInjection;
 using Antda.Messages.Middleware;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;

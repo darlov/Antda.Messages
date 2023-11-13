@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Core", "Antda.Core\Antda.Core.csproj", "{292D386C-189C-4442-802B-D8B08B2BB063}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Messages.Core", "Antda.Messages.Core\Antda.Messages.Core.csproj", "{292D386C-189C-4442-802B-D8B08B2BB063}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Messages", "Antda.Messages\Antda.Messages.csproj", "{BBAF7632-EB27-4FC1-9E8F-C36E89739455}"
 EndProject
@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{24664DC2-595A-4F0B-8121-841F2F665D90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Core.Tests", "tests\Antda.Core.Tests\Antda.Core.Tests.csproj", "{02A4FD2B-8619-4BC5-90A9-825BD55CE557}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Messages.Core.Tests", "tests\Antda.Messages.Core.Tests\Antda.Messages.Core.Tests.csproj", "{02A4FD2B-8619-4BC5-90A9-825BD55CE557}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests", "tests\Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests\Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests.csproj", "{F5E56AEA-57FE-4AC1-8E5C-950C0435E2D5}"
 EndProject

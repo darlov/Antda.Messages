@@ -1,6 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#if !NET5_0_OR_GREATER
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
-#if !NET5_0_OR_GREATER
 // ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices;
 
@@ -8,6 +9,7 @@ namespace System.Runtime.CompilerServices;
 /// Allows capturing of the expressions passed to a method.
 /// </summary>
 [AttributeUsage(AttributeTargets.Parameter)]
+[EditorBrowsable(EditorBrowsableState.Never)]
 [ExcludeFromCodeCoverage]
 internal sealed class CallerArgumentExpressionAttribute : Attribute
 {

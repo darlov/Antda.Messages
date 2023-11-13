@@ -1,5 +1,5 @@
-﻿using Antda.Core.Exceptions;
-using Antda.Messages.DependencyInjection;
+﻿using Antda.Messages.Core.DependencyInjection;
+using Antda.Messages.Core.Exceptions;
 using Antda.Messages.Internal;
 using Antda.Messages.Middleware;
 using JetBrains.Annotations;

@@ -1,4 +1,4 @@
-﻿using Antda.Messages.DependencyInjection;
+﻿using Antda.Messages.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Antda.Messages.Extensions.Microsoft.DependencyInjection.Internal;

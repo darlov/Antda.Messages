@@ -1,12 +1,16 @@
-﻿#if NETSTANDARD2_0 || NETSTANDARD2_1 || NETCOREAPP2_0 || NETCOREAPP2_1 || NETCOREAPP2_2 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET45 || NET451 || NET452 || NET6 || NET461 || NET462 || NET47 || NET471 || NET472 || NET48
-
+﻿#if !NET5_0_OR_GREATER
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable once CheckNamespace
-namespace System.Runtime.CompilerServices
+namespace System.Runtime.CompilerServices;
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Method, Inherited = false)]
+[EditorBrowsable(EditorBrowsableState.Never)]
+[ExcludeFromCodeCoverage]
+internal sealed class IsExternalInit : Attribute
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    internal static class IsExternalInit { }
 }
+
 
 #endif

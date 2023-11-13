@@ -1,4 +1,4 @@
-﻿namespace Antda.Messages.DependencyInjection;
+﻿namespace Antda.Messages.Core.DependencyInjection;
 
 public enum ServiceRegistrarLifetime
 {

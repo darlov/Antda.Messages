@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using Antda.Core.Helpers;
-using Antda.Core.Tests.TestData;
+using Antda.Messages.Core.Helpers;
+using Antda.Messages.Core.Tests.TestData;
 
-namespace Antda.Core.Tests.Helpers;
+namespace Antda.Messages.Core.Tests.Helpers;
 
 public class TypeHelperTests
 {

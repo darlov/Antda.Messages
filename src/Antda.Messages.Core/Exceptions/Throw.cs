@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace Antda.Core.Exceptions;
+namespace Antda.Messages.Core.Exceptions;
 
 public static class Throw
 {
