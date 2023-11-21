@@ -36,6 +36,12 @@ jobs:
           core.exportVariable("ACTIONS_RUNTIME_URL", process.env.ACTIONS_RUNTIME_URL);
           core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN);
           core.setSecret(process.env.ACTIONS_RUNTIME_TOKEN);
+    - uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/Directory.Packages.props') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
     - name: Build
       run: sh build.sh --target=CI --verbosity=diagnostic
 
