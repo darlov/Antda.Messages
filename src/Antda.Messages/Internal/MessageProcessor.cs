@@ -9,7 +9,8 @@ internal class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage,
 {
   private readonly MessageDelegate _messageDelegate;
 
-  public MessageProcessor(IMiddlewareProvider middlewareProvider) => _messageDelegate = middlewareProvider.Create(typeof(TMessage));
+  public MessageProcessor(IMiddlewareProvider middlewareProvider)  
+    => _messageDelegate = middlewareProvider.Create(typeof(TMessage));
 
   public async Task<TResult> ProcessAsync(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {

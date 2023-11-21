@@ -7,7 +7,7 @@ public interface IMessageContext
 {
   IServiceResolver ServiceResolver { get; }
   
-  IMemoryCacheProvider<MiddlewareBuilder.MiddlewareCacheKey, Type> TypeCache { get; }
+  IMemoryCacheProvider<MiddlewareProvider.MiddlewareCacheKey, Type> TypeCache { get; }
 
   CancellationToken CancellationToken { get; }
   
