@@ -22,12 +22,7 @@ public static class TypeHelper
 
   private static IEnumerable<Type> FindTypesInternal(Type? typeToScan, Type acceptableType)
   {
-    if (typeToScan == null)
-    {
-      yield break;
-    }
-
-    if (typeToScan == typeof(object))
+    if (typeToScan == null || typeToScan == typeof(object))
     {
       yield break;
     }

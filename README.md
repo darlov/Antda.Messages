@@ -51,6 +51,5 @@ Example of usage:
 
 ```csharp 
 services
-    .AddAntdaMessages(typeof(Program).Assembly)
-    .UseHandleMessages();
+    .AddAntdaMessages(cfg => cfg.RegisterHandlersFromAssembly(typeof(Program).Assembly));
 ```

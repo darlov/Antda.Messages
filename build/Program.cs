@@ -11,7 +11,6 @@ return BuildHostBuilder
   .WithSource("src")
   .WithTitle("Antda.Messages")
   .WithRepository("Antda.Messages", "darlov")
-  .UseGithubPackageSource()
   .UseNugetPackageSource()
   .Build()
   .Run(args);
