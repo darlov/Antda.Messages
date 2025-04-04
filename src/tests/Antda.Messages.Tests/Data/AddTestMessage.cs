@@ -1,11 +1,6 @@
 ﻿namespace Antda.Messages.Tests.Data;
 
-public class AddTestMessage : IMessage<string>
+public class AddTestMessage(string payload) : IMessage<string>
 {
-  public AddTestMessage(string payload)
-  {
-    this.Payload = payload;
-  }
-
-  public string Payload { get; }
+  public string Payload { get; } = payload;
 }

@@ -4,13 +4,10 @@ using Antda.Messages.Middleware;
 
 namespace Antda.Messages.Internal;
 
-internal class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage, TResult>
+internal class MessageProcessor<TMessage, TResult>(IMiddlewareProvider middlewareProvider) : IMessageProcessor<TMessage, TResult>
   where TMessage : IMessage<TResult>
 {
-  private readonly MessageDelegate _messageDelegate;
-
-  public MessageProcessor(IMiddlewareProvider middlewareProvider)  
-    => _messageDelegate = middlewareProvider.Create(typeof(TMessage));
+  private readonly MessageDelegate _messageDelegate = middlewareProvider.Create(typeof(TMessage));
 
   public async Task<TResult> ProcessAsync(TMessage message, IServiceResolver serviceResolver, CancellationToken cancellationToken)
   {
@@ -26,5 +23,5 @@ internal class MessageProcessor<TMessage, TResult> : IMessageProcessor<TMessage,
   }
 
   public Task<TResult> ProcessAsync(IMessage<TResult> message, IServiceResolver serviceResolver, CancellationToken cancellationToken) 
-    => this.ProcessAsync((TMessage)message, serviceResolver, cancellationToken);
+    => ProcessAsync((TMessage)message, serviceResolver, cancellationToken);
 }

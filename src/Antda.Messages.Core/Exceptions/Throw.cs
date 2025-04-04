@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -34,27 +33,9 @@ public static class Throw
         throw new ArgumentException("Argument cannot be empty.", paramName);
       }
     }
-    
-    [ContractAnnotation("argument:null=>halt;")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ArgumentNullOrEmpty([System.Diagnostics.CodeAnalysis.NotNull] IEnumerable? argument, [CallerArgumentExpression("argument")] string? paramName = null)
-    {
-      if (argument is null)
-      {
-        ThrowArgumentNull(paramName);
-      }
-
-      if (!argument.GetEnumerator().MoveNext())
-      {
-        throw new ArgumentException("Argument cannot be empty.", paramName);
-      }
-    }
 
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void ThrowArgumentNull(string? paramName)
-    {
-      throw new ArgumentNullException(paramName);
-    }
+    private static void ThrowArgumentNull(string? paramName) => throw new ArgumentNullException(paramName);
   }
 }

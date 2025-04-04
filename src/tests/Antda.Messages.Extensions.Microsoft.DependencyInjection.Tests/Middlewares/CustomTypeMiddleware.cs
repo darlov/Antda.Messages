@@ -4,14 +4,10 @@ using Antda.Messages.Middleware;
 
 namespace Antda.Messages.Extensions.Microsoft.DependencyInjection.Tests.Middlewares;
 
-public class CustomTypeMiddleware : MessageMiddleware<ICustomInterface>
+public class CustomTypeMiddleware(TestData<string> data) : MessageMiddleware<ICustomInterface>
 {
-  private readonly string _modifyText;
-  
-  public CustomTypeMiddleware(TestData<string> data)
-  {
-    _modifyText = data.Value;
-  }
+  private readonly string _modifyText = data.Value;
+
   public override Task InvokeAsync(IMessageContext<ICustomInterface> context, MessageDelegate next, CancellationToken cancellationToken)
   {
     context.Message.CustomProp = _modifyText;

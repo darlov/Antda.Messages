@@ -2,27 +2,21 @@
 
 namespace Antda.Messages.Middleware;
 
-public class MiddlewareProvider : IMiddlewareProvider
+public class MiddlewareProvider(ICollection<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> middlewares)
+  : IMiddlewareProvider
 {
-  private readonly ICollection<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)> _middlewares;
-
-  public MiddlewareProvider(ICollection<(Type MessageType, Func<MessageDelegate, MessageDelegate> Factory)>  middlewares)
-  {
-    _middlewares = middlewares;
-  }
-
   public MessageDelegate Create(Type messageType)
   {
+    var messageMiddlewares = GetMiddlewares(messageType);
+
+    return messageMiddlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, static (current, middleware) => middleware(current));
+
     Task InvokeDelegate(IMessageContext _) => Task.CompletedTask;
-
-    var middlewares = this.GetMiddlewares(messageType);
-
-    return middlewares.Reverse().Aggregate((MessageDelegate)InvokeDelegate, static (current, middleware) => middleware(current));
   }
 
   private IEnumerable<Func<MessageDelegate, MessageDelegate>> GetMiddlewares(Type messageType)
   {
-    foreach (var (type, middleware) in _middlewares)
+    foreach (var (type, middleware) in middlewares)
     {
       if (TypeHelper.FindTypes(messageType, type).Any())
       {
