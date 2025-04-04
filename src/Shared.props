@@ -1,13 +1,13 @@
 ﻿<Project>
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
     <Authors>Dzianis Arlouski</Authors>
     <Company>Dzianis Arlouski</Company>
-    <Copyright>Copyright © Dzianis Arlouski, 2023</Copyright>
+    <Copyright>Copyright © Dzianis Arlouski, 2025</Copyright>
 
     <PackageId>$(AssemblyName)</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -19,6 +19,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

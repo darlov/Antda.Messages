@@ -3,17 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Antda.Messages.Extensions.Microsoft.DependencyInjection;
 
-public class MicrosoftDependencyInjectionServiceResolver : IServiceResolver, ISupportRequiredServiceResolver
+public class MicrosoftDependencyInjectionServiceResolver(IServiceProvider serviceProvider) : IServiceResolver, ISupportRequiredServiceResolver
 {
-  private readonly IServiceProvider _serviceProvider;
+  public object? GetService(Type serviceType) => serviceProvider.GetService(serviceType);
 
-  public MicrosoftDependencyInjectionServiceResolver(IServiceProvider serviceProvider)
-  {
-    _serviceProvider = serviceProvider;
-  }
-
-  public object? GetService(Type serviceType) => _serviceProvider.GetService(serviceType);
-
-  public object GetRequiredService(Type serviceType) => _serviceProvider.GetRequiredService(serviceType);
+  public object GetRequiredService(Type serviceType) => serviceProvider.GetRequiredService(serviceType);
 
 }

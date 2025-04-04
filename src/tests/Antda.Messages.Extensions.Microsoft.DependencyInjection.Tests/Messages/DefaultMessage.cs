@@ -4,7 +4,7 @@ public class DefaultMessage : IMessage<string>, ICustomInterface
 {
   public DefaultMessage(string payload)
   {
-    this.Payload = payload;
+    Payload = payload;
   }
 
   public string Payload { get; }

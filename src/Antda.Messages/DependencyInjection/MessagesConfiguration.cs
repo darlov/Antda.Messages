@@ -23,6 +23,10 @@ public class MessagesConfiguration
   public ICollection<Type> MiddlewareTypes { get; }
   public ICollection<(Type From, Type To)> Handlers { get; }
 
+  public MessagesConfiguration RegisterHandlersFromAssembly<T>() => RegisterHandlersFromAssembly(typeof(T));
+
+  public MessagesConfiguration RegisterHandlersFromAssembly(Type type) => RegisterHandlersFromAssembly(type.Assembly);
+
   public MessagesConfiguration RegisterHandlersFromAssembly(params Assembly[] assembliesToScan)
   {
     foreach (var typeInfo in TypeHelper.FindAllowedTypes(assembliesToScan))
@@ -83,8 +87,8 @@ public class MessagesConfiguration
   {
     Throw.If.ArgumentNull(handlerType);
 
-    var types = TypeHelper.FindTypes(handlerType, typeof(IMessageHandler<,>)).ToList();
-    if (!types.Any())
+    var types = TypeHelper.FindTypes(handlerType, typeof(IMessageHandler<,>)).ToArray();
+    if (types.Length == 0)
     {
       if (skipNotSupported)
       {
