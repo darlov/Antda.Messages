@@ -25,13 +25,13 @@ public static class MessagesServiceCollectionExtensions
     Throw.If.ArgumentNull(setup);
 
     var messageConfiguration = new MessagesConfiguration(services);
-    messageConfiguration.AddMiddleware(typeof(HandleMessageMiddleware<,>));
 
     services.TryAdd(new ServiceDescriptor(typeof(IServiceResolver), typeof(MicrosoftDependencyInjectionServiceResolver), messageConfiguration.Lifetime));
     services.TryAdd(new ServiceDescriptor(typeof(IMessageSender), typeof(MessageSender), messageConfiguration.Lifetime));
     services.TryAddSingleton(typeof(IMemoryCacheProvider<,>), typeof(MemoryCacheProvider<,>));
     
     setup.Invoke(services, messageConfiguration);
+    messageConfiguration.AddHandleMessagesMiddleware();
 
     if (!messageConfiguration.Handlers.Any())
     {
