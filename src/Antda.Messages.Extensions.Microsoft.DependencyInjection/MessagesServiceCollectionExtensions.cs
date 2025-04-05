@@ -24,12 +24,12 @@ public static class MessagesServiceCollectionExtensions
     Throw.If.ArgumentNull(services);
     Throw.If.ArgumentNull(setup);
 
-    services.TryAddTransient<IServiceResolver, MicrosoftDependencyInjectionServiceResolver>();
-    services.TryAddTransient<IMessageSender, MessageSender>();
-    services.TryAddSingleton(typeof(IMemoryCacheProvider<,>), typeof(MemoryCacheProvider<,>));
-
     var messageConfiguration = new MessagesConfiguration(services);
-    messageConfiguration.UseMiddleware(typeof(HandleMessageMiddleware<,>));
+    messageConfiguration.AddMiddleware(typeof(HandleMessageMiddleware<,>));
+
+    services.TryAdd(new ServiceDescriptor(typeof(IServiceResolver), typeof(MicrosoftDependencyInjectionServiceResolver), messageConfiguration.Lifetime));
+    services.TryAdd(new ServiceDescriptor(typeof(IMessageSender), typeof(MessageSender), messageConfiguration.Lifetime));
+    services.TryAddSingleton(typeof(IMemoryCacheProvider<,>), typeof(MemoryCacheProvider<,>));
     
     setup.Invoke(services, messageConfiguration);
 
@@ -46,15 +46,11 @@ public static class MessagesServiceCollectionExtensions
     var middlewareBuilder = new MiddlewareProvider(messageConfiguration.MessageMiddlewares);
     services.AddSingleton<IMiddlewareProvider>(middlewareBuilder);
 
-    foreach (var middlewareType in messageConfiguration.MiddlewareTypes)
-    {
-      services.AddTransient(middlewareType);
-    }
-    
-    foreach (var (fromType, toType) in messageConfiguration.Handlers)
-    {
-      services.AddTransient(fromType, toType);
-    }
+    var middlewareDescriptors = messageConfiguration.MiddlewareTypes.Select(m => new ServiceDescriptor(m, m, messageConfiguration.Lifetime));
+    services.Add(middlewareDescriptors);
+
+    var handlerDescriptors = messageConfiguration.Handlers.Select(m => new ServiceDescriptor(m.From, m.To, messageConfiguration.Lifetime));
+    services.Add(handlerDescriptors);
 
     return services;
   }

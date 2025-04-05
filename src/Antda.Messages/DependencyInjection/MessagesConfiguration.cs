@@ -23,6 +23,15 @@ public class MessagesConfiguration
   public ICollection<Type> MiddlewareTypes { get; }
   public ICollection<(Type From, Type To)> Handlers { get; }
 
+  public ServiceLifetime Lifetime { get; private set; } = ServiceLifetime.Transient;
+
+  public MessagesConfiguration WithLifetime(ServiceLifetime lifetime)
+  {
+    Lifetime = lifetime;
+
+    return this;
+  }
+
   public MessagesConfiguration RegisterHandlersFromAssembly<T>() => RegisterHandlersFromAssembly(typeof(T));
 
   public MessagesConfiguration RegisterHandlersFromAssembly(Type type) => RegisterHandlersFromAssembly(type.Assembly);
@@ -37,9 +46,9 @@ public class MessagesConfiguration
     return this;
   }
   
-  public MessagesConfiguration UseMiddleware(Type messageType, Func<MessageDelegate, MessageDelegate> factory)
+  public MessagesConfiguration AddMiddleware(Type messageType, Func<MessageDelegate, MessageDelegate> middleware)
   {
-    MessageMiddlewares.Add((messageType, factory));
+    MessageMiddlewares.Add((messageType, middleware));
     return this;
   }
 
@@ -53,11 +62,11 @@ public class MessagesConfiguration
 
   public MessagesConfiguration AddMessageHandler(Type handlerType) => AddMessageHandlerInternal(handlerType, false);
   
-  public MessagesConfiguration UseMiddleware<TMiddleware>()
+  public MessagesConfiguration AddMiddleware<TMiddleware>()
     where TMiddleware : IMessageMiddleware 
-    => UseMiddleware(typeof(TMiddleware));
+    => AddMiddleware(typeof(TMiddleware));
   
-  public MessagesConfiguration UseMiddleware(Type middlewareType)
+  public MessagesConfiguration AddMiddleware(Type middlewareType)
   {
     Throw.If.ArgumentNull(middlewareType);
 
@@ -115,7 +124,7 @@ public class MessagesConfiguration
   {
     var genericMiddlewareType = middlewareType.GetGenericTypeDefinition();
 
-    UseMiddleware(typeof(IMessage<>), next =>
+    AddMiddleware(typeof(IMessage<>), next =>
     {
       return ctx =>
       {
@@ -140,7 +149,7 @@ public class MessagesConfiguration
   {
     var messageType = middlewareInterface.GenericTypeArguments.First();
 
-    UseMiddleware(messageType, next =>
+    AddMiddleware(messageType, next =>
     {
       return ctx =>
       {
