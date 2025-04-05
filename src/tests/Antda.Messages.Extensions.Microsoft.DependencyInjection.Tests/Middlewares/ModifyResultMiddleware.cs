@@ -8,10 +8,10 @@ public class ModifyResultMiddleware(TestData<string> data) : MessageMiddleware<D
 {
   private readonly string _additionalText = data.Value;
 
-  public override Task InvokeAsync(IMessageContext<DefaultMessage, string> context, MessageDelegate next, CancellationToken cancellationToken)
+  public override async Task InvokeAsync(IMessageContext<DefaultMessage, string> context, MessageDelegate next, CancellationToken cancellationToken)
   {
-    context.Result += _additionalText;
+    await next(context);
 
-    return next(context);
+    context.Result += _additionalText;
   }
 }

@@ -99,9 +99,7 @@ public class MessagesServiceCollectionExtensionsTests
     services.AddTransient((_) => new TestData<string>(CustomPropText));
     
     services.AddAntdaMessages(cfg => cfg
-        .ClearMiddlewares()
         .AddMiddleware<CustomTypeMiddleware>()
-        .AddHandleMessagesMiddleware()
         .AddMessageHandler<DefaultHandler>()
         .AddMessageHandler<NoResultHandler<NoResultMessage>>()
         .AddMessageHandler<NoResultHandler<NoResultWithCustomMessage>>());
